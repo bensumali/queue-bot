@@ -46,9 +46,20 @@ def Execute(data):
                 # Close the queue. Won't work if queue isn't open
                 if queueOpen:
                     queueOpen = False
+                    queue = []
+                    write_queue_to_file()
                     send_message(messageQueueClosed)
                 else:
                     send_whisper(data.User, messageQueueAlreadyClosed)
+            elif command == "!next":
+                if queueOpen:
+                    nextUser = queue.pop(0)
+                    send_message("@" + nextUser + ", you're up next!")
+                    write_queue_to_file()
+                else:
+                    send_whisper(data.User, messageJoinQueueClosed)
+
+
 
     else:
         if queueOpen:
