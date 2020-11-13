@@ -15,6 +15,9 @@ messageQueueAlreadyOpen = "Queue's already open you dum fuk"
 messageQueueClosed = "The queue is now closed! Thanks for playing!"
 messageQueueAlreadyClosed = "It's closed already wtf."
 
+messageJoinQueueClosed = "Sorry, queue's not open"
+messageLeaveQueueClosed = "Queue's not even open how do you even leave it"
+
 messageQueueFull = "Sorry, queue's full :/"
 
 lastCheckedQueue = []
@@ -66,6 +69,12 @@ def Execute(data):
                     write_queue_to_file()
                 else:
                     send_message(userToLeave + ", you aren't even in line. Pls.")
+        elif not queueOpen:
+            # Spits out error messages if users try to join on a closed queue
+            if command == "!join":
+                send_message(messageJoinQueueClosed)
+            elif command == "!leave":
+                send_message(messageLeaveQueueClosed)
 
     return
 
