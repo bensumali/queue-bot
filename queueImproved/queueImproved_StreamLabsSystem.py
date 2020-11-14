@@ -5,7 +5,7 @@ Creator = "pac0ncrack"
 Version = "1.0.0"
 
 queue = []
-queueFile = "queueFile.csv"
+queueFile = "queueFile.json"
 player1NameFile = ""
 player2NameFile = ""
 queueOpen = False
@@ -100,9 +100,11 @@ def send_whisper(user, message):
 
 def write_queue_to_file():
     file = open(queueFile, "w")
+    file.write("{\"players\": [")
     for index, val in enumerate(queue):
-        displayIndex = index + 1
-        file.write(str(displayIndex) + ", " + val + ", 0\n")
+        streak = 0
+        file.write("{\"name\": \"" + val + "\",\"streak\": " + str(streak) + "}")
+    file.write("]}")
     file.close()
     return
 
