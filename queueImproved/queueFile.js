@@ -1,1 +1,1 @@
-export default [{"name": "pac0ncrack","streak": 0}];
+export default [{"name": "pac0ncrack","streak": 0}, {"name": "pac0ncrack","streak": 0}];
