@@ -102,7 +102,7 @@ def write_queue_to_file():
     file = open(queueFile, "w")
     for index, val in enumerate(queue):
         displayIndex = index + 1
-        file.write("#" + str(displayIndex) + " " + val + "\n")
+        file.write(str(displayIndex) + ", " + val + ", 0\n")
     file.close()
     return
 

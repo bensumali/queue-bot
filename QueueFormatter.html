@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        @font-face {
+          font-family: 'VCR OSD Mono';
+          src: url(VCR_OSD_MONO_1.001.ttf);
+        }
+        body {
+            font-family: 'VCR OSD Mono';
+            margin: 0px;
+            padding: 0px;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: normal;
+            margin-top: 0px;
+        }
+
+        #player-queue-container {
+            background-color: rgba(0,0,0, .75);
+            color: white;
+            padding: 15px;
+        }
+        table {
+            border-spacing: 0px;
+            width: 100%;
+        }
+        tbody > tr > td {
+            padding-top: 10px;
+        }
+        th {
+            border-bottom: 3px solid white;
+            font-size: 14px;
+            font-weight: normal;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+        td > div {
+            display: inline-block;
+        }
+        .player-queue-player__streak-container {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div id="player-queue-container">
+        <div id="player-queue-container__header">
+            <h1>Player Queue</h1>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="text-align: left;">Name</th>
+                    <th style="text-align: right;">Highest Streak</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="player-queue-player__position">1)</div>
+                        <div class="player-queue-player__name">Someone</div>
+                    </td>
+                    <td class="player-queue-player__streak-container">
+                        <div class="player-queue-player__streak">
+                            1
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+    let app = new Vue({
+      el: '#player-queue-container',
+      data: {
+
+      }
+    })
+</script>
+</html>
