@@ -5,7 +5,7 @@ Creator = "pac0ncrack"
 Version = "1.0.0"
 
 queue = []
-queueFile = "queueFile.json"
+queueFile = "Services/Scripts/queueImproved/queueFile.js"
 player1NameFile = ""
 player2NameFile = ""
 queueOpen = False
@@ -100,11 +100,13 @@ def send_whisper(user, message):
 
 def write_queue_to_file():
     file = open(queueFile, "w")
-    file.write("{\"players\": [")
+    file.write("export default [")
     for index, val in enumerate(queue):
         streak = 0
         file.write("{\"name\": \"" + val + "\",\"streak\": " + str(streak) + "}")
-    file.write("]}")
+        if (len(queue) - 1) > index:
+            file.write(',')
+    file.write("];")
     file.close()
     return
 

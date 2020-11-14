@@ -59,10 +59,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr v-cloak v-for="(player, key) in queue">
                     <td>
-                        <div class="player-queue-player__position">1)</div>
-                        <div class="player-queue-player__name">Someone</div>
+                        <div class="player-queue-player__position">{{ key + 1 }})</div>
+                        <div class="player-queue-player__name">{{ player.name }}</div>
                     </td>
                     <td class="player-queue-player__streak-container">
                         <div class="player-queue-player__streak">
@@ -74,13 +74,5 @@
         </table>
     </div>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-<script>
-    let app = new Vue({
-      el: '#player-queue-container',
-      data: {
-
-      }
-    })
-</script>
+<script type="module" src="js/main.js"></script>
 </html>
