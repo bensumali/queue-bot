@@ -22,8 +22,54 @@ messageJoinQueueClosed = "Sorry, queue's closed"
 
 messageQueueFull = "Sorry, queue's full :/"
 
+
 lastCheckedQueue = []
-playerWins = {}
+players = {}
+player1Key = ""
+player2Key = ""
+
+class Player:
+  def __init__(self, name_twitch, name_display, set_wins, streak, highest_set_wins, highest_streak):
+    self.name_twitch = name_twitch
+    self.name_display = name_display
+
+    if not streak:
+        self.streak = 0
+    else:
+        self.streak = int(streak)
+    if not set_wins:
+        self.set_wins = 0
+    else:
+        self.set_wins = int(set_wins)
+    if not highest_streak:
+        self.highest_streak = 0
+    else:
+        self:highest_streak = int(highest_streak)
+    if not highest_set_wins:
+        self.highest_set_wins = 0
+    else
+        self.highest_set_wins = int(highest_set_wins)
+
+class Message:
+    def __init__(self, command, type, param1, param2):
+        self.command = command
+        self.type = type
+        self.param1 = param1
+        self.param2 = param2
+
+    def text(self):
+        text = ""
+        if self.command == '!setplayer':
+            if self.type == 'success':
+                text = self.param2 + " has been set as player 1"
+            elif self.type == 'error':
+                if not self.param1:
+                    text = "Error: Specify if you are adding player 1 or 2"
+                elif not self.param2:
+                    playerSide = "player " + self.param1
+                    text = "Error: Can't add " + playerSide + " without a name"
+        return text
+
 
 queueHTMLStart = \
     "<!DOCTYPE html>" \
@@ -64,8 +110,13 @@ def Execute(data):
     global queueOpen
     global queue
     global nextUser
-    
+    global player1Key
+    global player2Key
+
     command = data.GetParam(0).lower()
+    param1 = data.GetParam(1).lower()
+    param2 = data.GetParam(2).lower()
+    param3 = data.GetParam(3).lower()
     
     # Commands that are only for mods.
     if Parent.HasPermission(data.User, "Moderator", ""):
@@ -94,6 +145,22 @@ def Execute(data):
                 write_queue_to_file()
         elif command == "!currentplayer":
             send_message(nextUser)
+        elif command == "!setplayer":
+            if param1 == '1':
+                if param2:
+                    if param2 not in players:
+                        if param3:
+                            displayName = param3
+                        else:
+                            displayName = param2
+                        newPlayer = Player(param2, displayName, 0)
+                        players[param2] = newPlayer
+                    player1Key = param2
+                    send_message(Message(command, "success", param1, param2).text())
+
+
+
+
 
 
     if command == "!leave":
@@ -134,6 +201,8 @@ def is_queue_open():
 
 def send_whisper(user, message):
     Parent.SendStreamWhisper(user, message)
+
+
 
 def write_queue_to_file():
     file = open(queueFile, "w")
