@@ -25,30 +25,43 @@ messageQueueFull = "Sorry, queue's full :/"
 
 lastCheckedQueue = []
 players = {}
-player1Key = ""
-player2Key = ""
+currentPlayers = {
+    '1': {
+        'username': "",
+        'file': ""
+    },
+    '2': {
+        'username': "",
+        'file': ""
+    }
+}
+
 
 class Player:
-  def __init__(self, name_twitch, name_display, set_wins, streak, highest_set_wins, highest_streak):
-    self.name_twitch = name_twitch
-    self.name_display = name_display
+    def __init__(self, username, display_name="", match_wins=0, match_streak=0, highest_match_streak=0, set_wins=0, set_streak=0, highest_set_streak=0):
+        """
+        :param username: REQUIRED - Username this object represents
+        :param display_name: OPTIONAL - Alias that the user wants to be represented as on stream
+        :param match_wins: OPTIONAL - Current amount of matches won by this player. Defaults to 0.
+        :param match_streak: OPTIONAL - Current amount of concurrent matches won by this player. Defaults to 0.
+        :param highest_match_streak: OPTIONAL - Highest amount of concurrent matches won by this player. Defaults to 0.
+        :param set_wins: OPTIONAL - Current amount of sets won by this player. Defaults to 0.
+        :param set_streak: OPTIONAL - Current number of concurrent sets this player has won. Defaults to 0.
+        :param highest_set_streak:  OPTIONAL - Highest amount of concurrent sets won by this player. Defaults to 0.
+        """
+        self.username = username
+        if not display_name:
+            self.display_name = username
+        else:
+            self.display_name = display_name
 
-    if not streak:
-        self.streak = 0
-    else:
-        self.streak = int(streak)
-    if not set_wins:
-        self.set_wins = 0
-    else:
+        self.match_wins = int(match_wins)
+        self.match_streak = int(match_streak)
+        self.highest_match_streak = int(highest_match_streak)
         self.set_wins = int(set_wins)
-    if not highest_streak:
-        self.highest_streak = 0
-    else:
-        self:highest_streak = int(highest_streak)
-    if not highest_set_wins:
-        self.highest_set_wins = 0
-    else
-        self.highest_set_wins = int(highest_set_wins)
+        self.set_streak = int(set_streak)
+        self.highest_set_streak = int(highest_set_streak)
+
 
 class Message:
     def __init__(self, command, type, param1, param2):
@@ -61,7 +74,7 @@ class Message:
         text = ""
         if self.command == '!setplayer':
             if self.type == 'success':
-                text = self.param2 + " has been set as player 1"
+                text = "@" + self.param2 + " has been set as player " + self.param1
             elif self.type == 'error':
                 if not self.param1:
                     text = "Error: Specify if you are adding player 1 or 2"
@@ -110,8 +123,7 @@ def Execute(data):
     global queueOpen
     global queue
     global nextUser
-    global player1Key
-    global player2Key
+    global currentPlayers
 
     command = data.GetParam(0).lower()
     param1 = data.GetParam(1).lower()
@@ -146,17 +158,7 @@ def Execute(data):
         elif command == "!currentplayer":
             send_message(nextUser)
         elif command == "!setplayer":
-            if param1 == '1':
-                if param2:
-                    if param2 not in players:
-                        if param3:
-                            displayName = param3
-                        else:
-                            displayName = param2
-                        newPlayer = Player(param2, displayName, 0)
-                        players[param2] = newPlayer
-                    player1Key = param2
-                    send_message(Message(command, "success", param1, param2).text())
+            set_player(param1, param2, param3)
 
 
 
@@ -174,13 +176,7 @@ def Execute(data):
     if queueOpen:
         # Commands available when the queue is open
         if command == "!join":
-            userToAdd = data.User
-            if userToAdd not in queue:
-                queue.append(userToAdd)
-                send_message(userToAdd + ", you have entered the queue. Pos: #" + str(len(queue)) + "!")
-                write_queue_to_file()
-            else:
-                send_message("Dafuq, " + userToAdd + ", you already in line. You #" + str(queue.index(userToAdd)) + ".")
+            join_queue(data.User)
     elif not queueOpen:
         # Spits out error messages if users try to join on a closed queue
         if command == "!join":
@@ -190,6 +186,58 @@ def Execute(data):
 
 def Tick():        
     return
+
+def set_player(player_side, username, displayname):
+    """
+    Set a player to either player slot. Can take in a player's desired alias too.
+    :param player_side: REQUIRED - Integer that represents which player is being added
+    :param username: REQUIRED - Username of the player being added
+    :param displayname: OPTIONAL - If the player wants to go by an alias other than their username, you can pass that in
+    :return: bool
+    """
+    # Check to see if the player side was passed as a param
+    if not player_side:
+        # If it wasn't then we tell the user they dum as fuk
+        send_message(Message("!setplayer", "error", player_side, username).text())
+        return False
+    else:
+        # If we get the player side passed in as a param, we continue with the rest of the checks
+        # Check if there was a username passed in
+        if username:
+            # If there was a username passed in, continue with the rest of the checks
+            # Check to see if a displayname was passed in
+            if not displayname:
+                # If there was no displayname passed, we'll just default it to the user's username
+                displayname = username
+            # Check to see if we already have the player in our dictionary
+            if username not in players:
+                # If we don't have the player in our dictionary, create a new Player instance for them and add to the dictionary
+                new_player = Player(username, displayname)
+                players[username] = new_player
+            # Map the currentPlayers dictionary with the user's username. We can grab the appropriate info from the players dictionary
+            currentPlayers[player_side]['username'] = username
+            send_message(Message("!setplayer", "success", player_side, username).text())
+            return True
+        else:
+            # If there's no username, then the user fuked up
+            send_message(Message("!setplayer", "error", player_side, username).text())
+            return False
+
+
+def join_queue(username):
+    """
+    :param username: User that wants to join the queue
+    :return: bool
+    """
+    userToAdd = username
+    if userToAdd not in queue:
+        queue.append(userToAdd)
+        send_message("@" + userToAdd + ", you have entered the queue. Pos: #" + str(len(queue)) + "!")
+        write_queue_to_file()
+        return True
+    else:
+        send_message("Dafuq, @" + userToAdd + ", you already in line. You #" + str(queue.index(userToAdd) + 1) + ".")
+        return False
 
 
 def send_message(message):
@@ -213,7 +261,7 @@ def write_queue_to_file():
             stringToWrite = "<tr>"\
                             "   <td>"\
                             "       <div class='player-queue-player__position'>" + str(index + 1) + ")</div>"\
-                            "          <div class='player-queue-player__name'>" + val + "</div>"\
+                            "          <div class='player-queue-player__name'>" + players[val].name_display + "</div>"\
                             "   </td>"\
                             "   <td class='player-queue-player__streak-container'>"\
                             "       <div class='player-queue-player__streak'>" + str(0) + "</div>"\
