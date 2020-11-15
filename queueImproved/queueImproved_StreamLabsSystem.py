@@ -28,13 +28,63 @@ players = {}
 currentPlayers = {
     '1': {
         'username': "",
-        'file': ""
+        'file': "Services/Scripts/queueImproved/player1name.html"
     },
     '2': {
         'username': "",
-        'file': ""
+        'file': "Services/Scripts/queueImproved/player2name.html"
     }
 }
+
+queueHTMLStart = "" \
+                 "<!DOCTYPE html>" \
+                 "<html lang='en'>" \
+                 "<head>" \
+                 "<meta charset='UTF-8'>" \
+                 "<title>Title</title>" \
+                 "    <link href='queueFormatter.css' rel='stylesheet'>" \
+                 "    <script>" \
+                 "        function reload(){setTimeout(function(){location.reload();},2000)}reload();" \
+                 "    </script>" \
+                 "</head>" \
+                 "<body>" \
+                 "   <div id='player-queue-container'>" \
+                 "        <div id='player-queue-container__header'>" \
+                 "            <h1>Player Queue</h1>" \
+                 "        </div>" \
+                 "        <table>" \
+                 "            <thead>" \
+                 "                <tr>" \
+                 "                    <th style='text-align: left;'>Name</th>" \
+                 "                    <th style='text-align: right;'>Highest Streak</th>" \
+                 "                </tr>" \
+                 "            </thead>" \
+                 "            <tbody>" \
+
+queueHTMLEnd = \
+    "" \
+    "            </tbody>" \
+    "        </table>" \
+    "    </div>" \
+    "</body>" \
+    "</html>"
+
+playerNameHTMLStart = "" \
+    "<!DOCTYPE html>" \
+    "<html lang='en'>" \
+    "<head>" \
+    "<meta charset='UTF-8'>" \
+    "<title>Title</title>" \
+    "    <link href='playerNameScore.css' rel='stylesheet'>" \
+    "    <script>" \
+    "        //function reload(){setTimeout(function(){location.reload();},2000)}reload();" \
+    "    </script>" \
+    "</head>" \
+    "<body>" \
+
+playerNameHTMLEnd = "" \
+    "</body>" \
+    "</html>"
 
 
 class Player:
@@ -62,6 +112,18 @@ class Player:
         self.set_streak = int(set_streak)
         self.highest_set_streak = int(highest_set_streak)
 
+        def add_match_win():
+            ++self.match_wins
+
+        def remove_match_win():
+            --self.match_wins
+
+        def set_match_wins(wins):
+            self.match_wins += wins
+
+        def add_set_win():
+            ++self.set_wins
+
 
 class Message:
     def __init__(self, command, type, param1, param2):
@@ -84,37 +146,7 @@ class Message:
         return text
 
 
-queueHTMLStart = \
-    "<!DOCTYPE html>" \
-    "<html lang='en'>" \
-    "<head>" \
-    "<meta charset='UTF-8'>"\
-    "<title>Title</title>"\
-    "    <link href='queueFormatter.css' rel='stylesheet'>"\
-    "    <script>"\
-    "        function reload(){setTimeout(function(){location.reload();},2000)}reload();"\
-    "    </script>"\
-    "</head>"\
-    "<body>"\
-    "   <div id='player-queue-container'>"\
-    "        <div id='player-queue-container__header'>"\
-    "            <h1>Player Queue</h1>"\
-    "        </div>"\
-    "        <table>"\
-    "            <thead>"\
-    "                <tr>"\
-    "                    <th style='text-align: left;'>Name</th>"\
-    "                    <th style='text-align: right;'>Highest Streak</th>"\
-    "                </tr>"\
-    "            </thead>"\
-    "            <tbody>"\
 
-queueHTMLEnd = ""\
-    "            </tbody>"\
-    "        </table>"\
-    "    </div>"\
-    "</body>"\
-    "</html>"
 
 def Init():
     return
@@ -184,8 +216,10 @@ def Execute(data):
 
     return
 
+
 def Tick():        
     return
+
 
 def set_player(player_side, username, displayname):
     """
@@ -217,6 +251,8 @@ def set_player(player_side, username, displayname):
             # Map the currentPlayers dictionary with the user's username. We can grab the appropriate info from the players dictionary
             currentPlayers[player_side]['username'] = username
             send_message(Message("!setplayer", "success", player_side, username).text())
+            write_player_name_file(displayname, player_side)
+
             return True
         else:
             # If there's no username, then the user fuked up
@@ -244,13 +280,22 @@ def send_message(message):
     Parent.SendStreamMessage(message)
     return
 
+
 def is_queue_open():
     return queueOpen
+
 
 def send_whisper(user, message):
     Parent.SendStreamWhisper(user, message)
 
-
+def write_player_name_file(displayname, side):
+    file = open(currentPlayers[side]['file'], "w")
+    file.write(playerNameHTMLStart)
+    stringtowrite = "<div class='player-name player-side-"+side+"'>"+displayname+"</div>"
+    file.write(stringtowrite)
+    file.write(playerNameHTMLEnd)
+    file.close()
+    return True
 
 def write_queue_to_file():
     file = open(queueFile, "w")
@@ -275,6 +320,7 @@ def write_queue_to_file():
     file.write(queueHTMLEnd)
     file.close()
     return
+
 
 def update_player_name_file(fileLocation, name):
     file = open(fileLocation, "w")
