@@ -25,6 +25,7 @@ table {
     width: 100%;
 }
 tbody > tr > td {
+    padding-bottom: 10px;
     padding-top: 10px;
 }
 th {
