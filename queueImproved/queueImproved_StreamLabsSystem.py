@@ -10,6 +10,7 @@ player1NameFile = ""
 player2NameFile = ""
 queueOpen = False
 queueMaxCapacity = 10
+queueClosedPlayer = "QUEUE IS NOW CLOSED"
 
 messageQueueOpen = "The queue is now open!"
 messageQueueAlreadyOpen = "Queue's already open you dum fuk"
@@ -72,6 +73,8 @@ def Execute(data):
             # Open the queue. Will only work if the queue is not already open
             if not queueOpen:
                 queueOpen = True
+                queue = []
+                write_queue_to_file()
                 send_message(messageQueueOpen)
             else:
                 send_message(messageQueueAlreadyOpen)
@@ -79,6 +82,8 @@ def Execute(data):
             # Close the queue. Won't work if queue isn't open
             if queueOpen:
                 queueOpen = False
+                queue.append(queueClosedPlayer)
+                write_queue_to_file()
                 send_message(messageQueueClosed)
             else:
                 send_message(messageQueueAlreadyClosed)
@@ -135,15 +140,20 @@ def write_queue_to_file():
     file.write(queueHTMLStart)
     for index, val in enumerate(queue):
         streak = 0
-        stringToWrite = "<tr>"\
-                        "   <td>"\
-                        "       <div class='player-queue-player__position'>" + str(index) + ")</div>"\
-                        "          <div class='player-queue-player__name'>" + val + "</div>"\
-                        "   </td>"\
-                        "   <td class='player-queue-player__streak-container'>"\
-                        "       <div class='player-queue-player__streak'>" + str(0) + "</div>"\
-                        "   </td>"\
-                        "</tr>"
+        if val != queueClosedPlayer:
+            stringToWrite = "<tr>"\
+                            "   <td>"\
+                            "       <div class='player-queue-player__position'>" + str(index + 1) + ")</div>"\
+                            "          <div class='player-queue-player__name'>" + val + "</div>"\
+                            "   </td>"\
+                            "   <td class='player-queue-player__streak-container'>"\
+                            "       <div class='player-queue-player__streak'>" + str(0) + "</div>"\
+                            "   </td>"\
+                            "</tr>"
+        else:
+            stringToWrite = "<tr>" \
+                            "   <td class='player-queue-player__closed' colspan='2'>" + queueClosedPlayer + "</td>" \
+                            "</tr>"
         file.write(stringToWrite)
     file.write(queueHTMLEnd)
     file.close()

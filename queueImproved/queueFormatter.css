@@ -44,3 +44,8 @@ td > div {
 .player-queue-player__streak-container {
     text-align: right;
 }
+.player-queue-player__closed {
+    text-align: center;
+    padding-bottom: 10px;
+    background-color: #ff0000;
+}
