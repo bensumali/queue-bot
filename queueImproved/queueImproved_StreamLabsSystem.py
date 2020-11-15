@@ -5,7 +5,7 @@ Creator = "pac0ncrack"
 Version = "1.0.0"
 
 queue = []
-queueFile = "Services/Scripts/queueImproved/queueFile.js"
+queueFile = "Services/Scripts/queueImproved/queueFormatter.html"
 player1NameFile = ""
 player2NameFile = ""
 queueOpen = False
@@ -23,6 +23,38 @@ messageQueueFull = "Sorry, queue's full :/"
 
 lastCheckedQueue = []
 playerWins = {}
+
+queueHTMLStart = \
+    "<!DOCTYPE html>" \
+    "<html lang='en'>" \
+    "<head>" \
+    "<meta charset='UTF-8'>"\
+    "<title>Title</title>"\
+    "    <link href='queueFormatter.css' rel='stylesheet'>"\
+    "    <script>"\
+    "        function reload(){setTimeout(function(){location.reload();},2000)}reload();"\
+    "    </script>"\
+    "</head>"\
+    "<body>"\
+    "   <div id='player-queue-container'>"\
+    "        <div id='player-queue-container__header'>"\
+    "            <h1>Player Queue</h1>"\
+    "        </div>"\
+    "        <table>"\
+    "            <thead>"\
+    "                <tr>"\
+    "                    <th style='text-align: left;'>Name</th>"\
+    "                    <th style='text-align: right;'>Highest Streak</th>"\
+    "                </tr>"\
+    "            </thead>"\
+    "            <tbody>"\
+
+queueHTMLEnd = ""\
+    "            </tbody>"\
+    "        </table>"\
+    "    </div>"\
+    "</body>"\
+    "</html>"
 
 def Init():
     return
@@ -100,13 +132,20 @@ def send_whisper(user, message):
 
 def write_queue_to_file():
     file = open(queueFile, "w")
-    file.write("export default [")
+    file.write(queueHTMLStart)
     for index, val in enumerate(queue):
         streak = 0
-        file.write("{\"name\": \"" + val + "\",\"streak\": " + str(streak) + "}")
-        if (len(queue) - 1) > index:
-            file.write(',')
-    file.write("];")
+        stringToWrite = "<tr>"\
+                        "   <td>"\
+                        "       <div class='player-queue-player__position'>" + str(index) + ")</div>"\
+                        "          <div class='player-queue-player__name'>" + val + "</div>"\
+                        "   </td>"\
+                        "   <td class='player-queue-player__streak-container'>"\
+                        "       <div class='player-queue-player__streak'>" + str(0) + "</div>"\
+                        "   </td>"\
+                        "</tr>"
+        file.write(stringToWrite)
+    file.write(queueHTMLEnd)
     file.close()
     return
 
