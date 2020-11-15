@@ -119,7 +119,7 @@ class Player:
             --self.match_wins
 
         def set_match_wins(wins):
-            self.match_wins += wins
+            self.match_wins = wins
 
         def add_set_win():
             ++self.set_wins
@@ -171,20 +171,21 @@ def Execute(data):
                 queueOpen = True
                 queue = []
                 write_queue_to_file()
+                write_player_name_file('', '1')
+                write_player_name_file('', '2')
                 send_message(messageQueueOpen)
             else:
                 send_message(messageQueueAlreadyOpen)
         elif command == "!closeq":
             close_queue()
         elif command == "!next":
-            if queueOpen:
-                nextUser = queue.pop(0)
-                send_message("@" + nextUser + ", you're up next!")
-                write_queue_to_file()
+            pop_next_player(param1)
         elif command == "!currentplayer":
             send_message(nextUser)
         elif command == "!setplayer":
             set_player(param1, param2, param3)
+        elif command == "!swap":
+            swap_current_players()
 
 
 
@@ -333,4 +334,21 @@ def close_queue():
         send_message(messageQueueClosed)
     else:
         send_message(messageQueueAlreadyClosed)
+
+
+def pop_next_player(player_side):
+    next_user = queue.pop(0)
+    currentPlayers[player_side]['username'] = next_user
+    send_message("@" + next_user + ", you're up next!")
+    write_queue_to_file()
+    return True
+
+
+def swap_current_players():
+    player_1 = currentPlayers['1']
+    player_2 = currentPlayers['2']
+
+    currentPlayers['1'] = player_2
+    currentPlayers['2'] = player_1
+    return True
 

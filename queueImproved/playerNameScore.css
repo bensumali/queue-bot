@@ -12,5 +12,15 @@ body {
 }
 .player-name {
     color: #14FF00;
-    font-size: 18px;
+    font-size: 21px;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+}
+.player-side-1 {
+    justify-content: flex-end;
+    padding-right: 15px;
+}
+.player-side-2 {
+
 }
