@@ -10,7 +10,7 @@ player1NameFile = ""
 player2NameFile = ""
 queueOpen = False
 queueMaxCapacity = 10
-queueClosedPlayer = "QUEUE IS NOW CLOSED"
+queueClosedPlayer = "QUEUE IS CLOSED"
 
 messageQueueOpen = "The queue is now open!"
 messageQueueAlreadyOpen = "Queue's already open you dum fuk"
@@ -149,6 +149,7 @@ class Message:
 
 
 def Init():
+
     return
 
 def Execute(data):
@@ -174,14 +175,7 @@ def Execute(data):
             else:
                 send_message(messageQueueAlreadyOpen)
         elif command == "!closeq":
-            # Close the queue. Won't work if queue isn't open
-            if queueOpen:
-                queueOpen = False
-                queue.append(queueClosedPlayer)
-                write_queue_to_file()
-                send_message(messageQueueClosed)
-            else:
-                send_message(messageQueueAlreadyClosed)
+            close_queue()
         elif command == "!next":
             if queueOpen:
                 nextUser = queue.pop(0)
@@ -327,5 +321,16 @@ def update_player_name_file(fileLocation, name):
     file.write(name)
     file.close()
     return
-    
+
+
+def close_queue():
+    # Close the queue. Won't work if queue isn't open
+    global queueOpen
+    if queueOpen:
+        queueOpen = False
+        queue.append(queueClosedPlayer)
+        write_queue_to_file()
+        send_message(messageQueueClosed)
+    else:
+        send_message(messageQueueAlreadyClosed)
 
