@@ -112,6 +112,9 @@ class Player:
         self.set_streak = int(set_streak)
         self.highest_set_streak = int(highest_set_streak)
 
+        def set_display_name(name):
+            self.display_name = name
+
         def add_match_win():
             ++self.match_wins
 
@@ -176,13 +179,15 @@ def Execute(data):
         elif command == "!currentplayer":
             send_message(nextUser)
         elif command == "!setplayer":
-            set_player(param1, param2, param3)
+            set_player(param1, param2, data)
         elif command == "!removeplayer":
             remove_from_queue(param1)
         elif command == "!swap":
             swap_current_players()
     if command == "!leave":
         remove_from_queue(data.User)
+    elif command == "!setname":
+        set_name(data.User, data)
     if queueOpen:
         # Commands available when the queue is open
         if command == "!join":
@@ -199,12 +204,12 @@ def Tick():
     return
 
 
-def set_player(player_side, username, displayname):
+def set_player(player_side, username, data):
     """
     Set a player to either player slot. Can take in a player's desired alias too.
     :param player_side: REQUIRED - Integer that represents which player is being added
     :param username: REQUIRED - Username of the player being added
-    :param displayname: OPTIONAL - If the player wants to go by an alias other than their username, you can pass that in
+    :param data: OPTIONAL - Check to see if there was any desired display name passed in
     :return: bool
     """
     # Check to see if the player side was passed as a param
@@ -218,9 +223,7 @@ def set_player(player_side, username, displayname):
         if username:
             # If there was a username passed in, continue with the rest of the checks
             # Check to see if a displayname was passed in
-            if not displayname:
-                # If there was no displayname passed, we'll just default it to the user's username
-                displayname = username
+            display_name = generate_display_name(data)
             # Check to see if we already have the player in our dictionary
             if username not in players:
                 # If we don't have the player in our dictionary, create a new Player instance for them and add to the dictionary
@@ -255,6 +258,20 @@ def open_queue(fresh=False):
         send_message(messageQueueOpen)
     else:
         send_message(messageQueueAlreadyOpen)
+
+
+def generate_display_name(data):
+    i = 1
+    word = data.GetParam(i)
+    display_name = ""
+    while word != '':
+        if i > 1:
+            display_name += " "
+        display_name += word
+        i += 1
+        word = data.GetParam(i)
+    display_name += ""
+    return display_name
 
 
 def clear_queue():
@@ -304,6 +321,23 @@ def is_queue_open():
 
 def send_whisper(user, message):
     Parent.SendStreamWhisper(user, message)
+
+
+def set_name(username, data):
+    global players
+    if not data.GetParam(0):
+        send_message("If you want a different name, you have to tell me what it is you asshat")
+        return False
+    else:
+        display_name = generate_display_name(data)
+        if username not in players:
+            new_player = Player(username, display_name)
+            players[username] = new_player
+        else:
+            player = players.get(username)
+            player.set_name(display_name)
+        send_message("Changed @" + username + "'s display name to '" + display_name + "'")
+        return True
 
 
 def write_player_name_file(displayname, side):
