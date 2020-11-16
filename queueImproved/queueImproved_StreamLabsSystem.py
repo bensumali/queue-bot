@@ -166,40 +166,23 @@ def Execute(data):
     # Commands that are only for mods.
     if Parent.HasPermission(data.User, "Moderator", ""):
         if command == "!openq":
-            # Open the queue. Will only work if the queue is not already open
-            if not queueOpen:
-                queueOpen = True
-                queue = []
-                write_queue_to_file()
-                write_player_name_file('', '1')
-                write_player_name_file('', '2')
-                send_message(messageQueueOpen)
-            else:
-                send_message(messageQueueAlreadyOpen)
+            open_queue(param1)
         elif command == "!closeq":
             close_queue()
+        elif command == "!clearq":
+            clear_queue()
         elif command == "!next":
             pop_next_player(param1)
         elif command == "!currentplayer":
             send_message(nextUser)
         elif command == "!setplayer":
             set_player(param1, param2, param3)
+        elif command == "!removeplayer":
+            remove_from_queue(param1)
         elif command == "!swap":
             swap_current_players()
-
-
-
-
-
-
     if command == "!leave":
-        userToLeave = data.User
-        if userToLeave in queue:
-            queue.remove(userToLeave)
-            send_message("Adios. " + userToLeave + " has left the queue.")
-            write_queue_to_file()
-        else:
-            send_message(userToLeave + ", you aren't even in line. Pls.")
+        remove_from_queue(data.User)
     if queueOpen:
         # Commands available when the queue is open
         if command == "!join":
@@ -255,14 +238,53 @@ def set_player(player_side, username, displayname):
             return False
 
 
+def open_queue(fresh=False):
+    global queueOpen
+    global queue
+    global queueClosedPlayer
+    # Open the queue. Will only work if the queue is not already open
+    if not queueOpen:
+        queueOpen = True
+        if fresh:
+            queue = []
+        elif queueClosedPlayer in queue:
+            queue.remove(queueClosedPlayer)
+        write_queue_to_file()
+        write_player_name_file('', '1')
+        write_player_name_file('', '2')
+        send_message(messageQueueOpen)
+    else:
+        send_message(messageQueueAlreadyOpen)
+
+
+def clear_queue():
+    global queue
+    queue = []
+    return True
+
+
+def remove_from_queue(username):
+    user_to_leave = username
+    if user_to_leave in queue:
+        queue.remove(user_to_leave)
+        send_message("Adios. " + user_to_leave + " has been removed from the queue.")
+        write_queue_to_file()
+    else:
+        send_message(user_to_leave + ", you aren't even in line. Pls.")
+
+
 def join_queue(username):
     """
     :param username: User that wants to join the queue
     :return: bool
     """
+    global players
     userToAdd = username
     if userToAdd not in queue:
         queue.append(userToAdd)
+        if userToAdd not in players:
+            new_player = Player(username)
+            players[userToAdd] = new_player
         send_message("@" + userToAdd + ", you have entered the queue. Pos: #" + str(len(queue)) + "!")
         write_queue_to_file()
         return True
@@ -283,6 +305,7 @@ def is_queue_open():
 def send_whisper(user, message):
     Parent.SendStreamWhisper(user, message)
 
+
 def write_player_name_file(displayname, side):
     file = open(currentPlayers[side]['file'], "w")
     file.write(playerNameHTMLStart)
@@ -292,24 +315,25 @@ def write_player_name_file(displayname, side):
     file.close()
     return True
 
+
 def write_queue_to_file():
     file = open(queueFile, "w")
     file.write(queueHTMLStart)
     for index, val in enumerate(queue):
-        streak = 0
         if val != queueClosedPlayer:
+            player = players.get(val)
             stringToWrite = "<tr>"\
                             "   <td>"\
                             "       <div class='player-queue-player__position'>" + str(index + 1) + ")</div>"\
-                            "          <div class='player-queue-player__name'>" + players[val].name_display + "</div>"\
+                            "          <div class='player-queue-player__name'>" + str(player.display_name) + "</div>"\
                             "   </td>"\
                             "   <td class='player-queue-player__streak-container'>"\
-                            "       <div class='player-queue-player__streak'>" + str(0) + "</div>"\
+                            "       <div class='player-queue-player__streak'>" + str(player.highest_set_streak) + "</div>"\
                             "   </td>"\
                             "</tr>"
         else:
             stringToWrite = "<tr>" \
-                            "   <td class='player-queue-player__closed' colspan='2'>" + queueClosedPlayer + "</td>" \
+                            "   <td class='player-queue-player__closed' colspan='2'>" + str(queueClosedPlayer) + "</td>" \
                             "</tr>"
         file.write(stringToWrite)
     file.write(queueHTMLEnd)
