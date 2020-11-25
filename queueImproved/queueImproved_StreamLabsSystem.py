@@ -6,8 +6,8 @@ Version = "1.0.0"
 
 queue = []
 queueFile = "Services/Scripts/queueImproved/queueFormatter.html"
-player1NameFile = ""
-player2NameFile = ""
+player1NameFile = "C:\Users\Kiet\Desktop\Streaming\Player 1.txt"
+player2NameFile = "C:\Users\Kiet\Desktop\Streaming\Player 2.txt"
 queueOpen = False
 queueMaxCapacity = 10
 queueClosedPlayer = "QUEUE IS CLOSED"
@@ -112,20 +112,25 @@ class Player:
         self.set_streak = int(set_streak)
         self.highest_set_streak = int(highest_set_streak)
 
-        def set_display_name(name):
-            self.display_name = name
+    def set_display_name(name):
+        self.display_name = name
 
-        def add_match_win():
-            ++self.match_wins
+    def add_match_win():
+        ++self.match_wins
 
-        def remove_match_win():
-            --self.match_wins
+    def remove_match_win():
+        --self.match_wins
 
-        def set_match_wins(wins):
-            self.match_wins = wins
+    def clear_set_match_wins():
+        self.set_wins = 0
 
-        def add_set_win():
-            ++self.set_wins
+    def set_match_wins(wins):
+        self.match_wins = wins
+
+    def add_set_win():
+        ++self.set_wins
+        if self.set_wins > self.highest_set_streak:
+            self.highest_set_streak = self.set_wins
 
 
 class Message:
@@ -184,6 +189,11 @@ def Execute(data):
             remove_from_queue(param1)
         elif command == "!swap":
             swap_current_players()
+        elif command == "!p1":
+            update_current_player_name(param1, 1)
+        elif command == "!p2":
+            update_current_player_name(param1, 2)
+
     if command == "!leave":
         remove_from_queue(data.User)
     elif command == "!setname":
@@ -255,6 +265,8 @@ def open_queue(fresh=False):
         write_queue_to_file()
         write_player_name_file('', '1')
         write_player_name_file('', '2')
+        update_current_player_name('', 1)
+        update_current_player_name('', 2)
         send_message(messageQueueOpen)
     else:
         send_message(messageQueueAlreadyOpen)
@@ -297,11 +309,14 @@ def join_queue(username):
     """
     global players
     userToAdd = username
+    
+    if is_currently_playing(username) == True:
+        send_message("You can't join the queue while playing.")
+        return True
+
     if userToAdd not in queue:
         queue.append(userToAdd)
-        if userToAdd not in players:
-            new_player = Player(username)
-            players[userToAdd] = new_player
+        add_player_record(userToAdd)
         send_message("@" + userToAdd + ", you have entered the queue. Pos: #" + str(len(queue)) + "!")
         write_queue_to_file()
         return True
@@ -396,11 +411,59 @@ def close_queue():
 
 def pop_next_player(player_side):
     next_user = queue.pop(0)
+    loser_user = currentPlayers[player_side]['username']
     currentPlayers[player_side]['username'] = next_user
     send_message("@" + next_user + ", you're up next!")
+
+    if player_side == "1":
+        update_player_name_file(player1NameFile, next_user)
+
+        # Because the player is being set in P1, 
+        # that means P2 is the winner of the last set.
+        # Increment the player 2 winstreak
+        # Get p2's username
+        player2username = currentPlayers['2']['username']
+        # Get the player'2s record
+        if not player2username:
+            if player2username in players:
+                players[player2username].add_set_win
+    else:
+        update_player_name_file(player2NameFile, next_user)
+
+        # Because the player is being set in P2, 
+        # that means P1 is the winner of the last set.
+        # Increment the player 1 winstreak
+        player1username = currentPlayers['1']['username']
+        if not player1username:
+            if player1username in players:
+                players[player1username].add_set_win
+
+
+
     write_queue_to_file()
     return True
 
+def is_currently_playing(username):
+    if currentPlayers['1']['username'] == username or currentPlayers['2']['username'] == username:
+        return True
+    else:
+        return False
+
+def update_current_player_name(username, player_side) :
+    
+    add_player_record(username)
+
+    if player_side == 1:
+        currentPlayers['1']['username'] = username
+        update_player_name_file(player1NameFile, username)
+    else:
+        currentPlayers['2']['username'] = username
+        update_player_name_file(player2NameFile, username)
+
+def add_player_record(username): 
+    if username not in players:
+            new_player = Player(username)
+            players[username] = new_player
 
 def swap_current_players():
     player_1 = currentPlayers['1']
@@ -408,5 +471,8 @@ def swap_current_players():
 
     currentPlayers['1'] = player_2
     currentPlayers['2'] = player_1
+
+    update_player_name_file(player1NameFile, player_2['username'])
+    update_player_name_file(player2NameFile, player_1['username'])
     return True
 
