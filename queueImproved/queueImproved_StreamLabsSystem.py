@@ -196,8 +196,8 @@ def Execute(data):
 
     if command == "!leave":
         remove_from_queue(data.User)
-    #elif command == "!setname":
-        #set_name(data.User, data)
+    elif command == "!setname":
+        set_name(data.User, data)
     if queueOpen:
         # Commands available when the queue is open
         if command == "!join":
