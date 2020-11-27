@@ -77,7 +77,7 @@ playerNameHTMLStart = "" \
     "<title>Title</title>" \
     "    <link href='playerNameScore.css' rel='stylesheet'>" \
     "    <script>" \
-    "        //function reload(){setTimeout(function(){location.reload();},2000)}reload();" \
+    "        function reload(){setTimeout(function(){location.reload();},2000)}reload();" \
     "    </script>" \
     "</head>" \
     "<body>" \
@@ -410,3 +410,4 @@ def swap_current_players():
     currentPlayers['2'] = player_1
     return True
 
+def reset_current_scores():
