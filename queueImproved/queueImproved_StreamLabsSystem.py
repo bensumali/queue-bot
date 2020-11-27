@@ -237,12 +237,12 @@ def set_player(player_side, username, data):
             # Check to see if we already have the player in our dictionary
             if username not in players:
                 # If we don't have the player in our dictionary, create a new Player instance for them and add to the dictionary
-                new_player = Player(username, displayname)
+                new_player = Player(username, display_name)
                 players[username] = new_player
             # Map the currentPlayers dictionary with the user's username. We can grab the appropriate info from the players dictionary
             currentPlayers[player_side]['username'] = username
             send_message(Message("!setplayer", "success", player_side, username).text())
-            write_player_name_file(displayname, player_side)
+            write_player_name_file(display_name, player_side)
 
             return True
         else:
@@ -443,11 +443,13 @@ def pop_next_player(player_side):
     write_queue_to_file()
     return True
 
+
 def is_currently_playing(username):
     if currentPlayers['1']['username'] == username or currentPlayers['2']['username'] == username:
         return True
     else:
         return False
+
 
 def update_current_player_name(username, player_side) :
     
@@ -460,10 +462,12 @@ def update_current_player_name(username, player_side) :
         currentPlayers['2']['username'] = username
         update_player_name_file(player2NameFile, username)
 
+
 def add_player_record(username): 
     if username not in players:
             new_player = Player(username)
             players[username] = new_player
+
 
 def swap_current_players():
     player_1 = currentPlayers['1']
@@ -475,6 +479,7 @@ def swap_current_players():
     update_player_name_file(player1NameFile, player_2['username'])
     update_player_name_file(player2NameFile, player_1['username'])
     return True
+
 
 def reset_current_scores():
     return True
