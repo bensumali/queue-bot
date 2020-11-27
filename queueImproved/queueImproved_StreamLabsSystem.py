@@ -411,3 +411,4 @@ def swap_current_players():
     return True
 
 def reset_current_scores():
+    return True
