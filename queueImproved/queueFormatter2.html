@@ -25,43 +25,64 @@
     <script>
         let time = Math.floor(Date.now() / 1000);
         const importQueue = () => import('./source_content/queue.js?t=' + time);
+        let queue = {}
         function loop() {
             importQueue().then(function(resp) {
-                const queue = resp.default;
+                const newQueue = resp.default;
                 const elementId = "player-queue-container__body";
-                document.getElementById(elementId).innerHTML = "";
-                if(queue.hasOwnProperty('players')) {
-                    for(let k in queue.players) {
-                        let player = queue.players[k];
-                        let index = parseInt(k) + 1;
-                        let tr = document.createElement("tr");
-                        let td1 = document.createElement("td");
+                if(newQueue !== queue) {
+                    console.log("here");
+                    queue = newQueue;
+                    document.getElementById(elementId).innerHTML = "";
+                    if (queue.hasOwnProperty('players')) {
+                        for (let k in queue.players) {
+                            let player = queue.players[k];
+                            let index = parseInt(k) + 1;
+                            let tr = document.createElement("tr");
+                            let td1 = document.createElement("td");
 
-                        let position = document.createElement("div");
-                        position.classList.add("player-queue-player__position");
-                        position.innerHTML = index + ") ";
+                            let position = document.createElement("div");
+                            position.classList.add("player-queue-player__position");
+                            position.innerHTML = index + ") ";
 
-                        let name = document.createElement("div");
-                        name.classList.add("player-queue-player__name");
-                        name.innerHTML = player;
+                            let name = document.createElement("div");
+                            name.classList.add("player-queue-player__name");
+                            name.innerHTML = player;
 
-                        let td2 = document.createElement("td");
-                        td2.classList.add("player-queue-player__streak-container");
+                            let td2 = document.createElement("td");
+                            td2.classList.add("player-queue-player__streak-container");
 
-                        let streak = document.createElement("div");
-                        streak.classList.add("player-queue-player__streak");
-                        streak.innerHTML = "0";
+                            let streak = document.createElement("div");
+                            streak.classList.add("player-queue-player__streak");
+                            streak.innerHTML = "0";
 
-                        td1.appendChild(position);
-                        td1.appendChild(name);
-                        tr.appendChild(td1);
-                        td2.appendChild(streak);
-                        tr.appendChild(td2);
+                            td1.appendChild(position);
+                            td1.appendChild(name);
+                            tr.appendChild(td1);
+                            td2.appendChild(streak);
+                            tr.appendChild(td2);
 
-                        document.getElementById("player-queue-container__body").appendChild(tr);
+                            document.getElementById("player-queue-container__body").appendChild(tr);
 
+                        }
+                        if (!queue.is_open) {
+                            const closeTr = document.createElement("tr");
+                            const closeTd = document.createElement("td");
+                            closeTd.classList.add("player-queue-player__closed");
+                            closeTd.setAttribute("colspan", "2");
+                            closeTd.innerHTML = "QUEUE IS CLOSED";
+                            closeTr.appendChild(closeTd);
+                            document.getElementById(elementId).appendChild(closeTr);
+                        } else if (queue.players.length <= 0) {
+                            const noPlayersTr = document.createElement("tr");
+                            const noPlayersTd = document.createElement("td");
+                            noPlayersTd.classList.add("player-queue-player__no-players");
+                            noPlayersTd.setAttribute("colspan", "2");
+                            noPlayersTd.innerHTML = "NO PLAYERS IN QUEUE";
+                            noPlayersTr.appendChild(noPlayersTd);
+                            document.getElementById(elementId).appendChild(noPlayersTr);
+                        }
                     }
-
                 }
                 time = Math.floor(Date.now() / 1000);
                 setTimeout(loop, 1000)

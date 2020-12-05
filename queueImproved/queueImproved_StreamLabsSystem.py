@@ -348,10 +348,12 @@ def close_queue():
     global queue
     if queue.is_queue_open():
         queue.close_queue()
-        # write_queue_to_file()
+        write_queue_to_file()
         send_message(messageQueueClosed)
+        return True
     else:
         send_message(messageQueueAlreadyClosed)
+        return False
 
 
 def pop_next_player(player_side):
