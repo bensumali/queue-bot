@@ -36,47 +36,13 @@ players = {}
 currentPlayers = {
     '1': {
         'username': "",
-        'file': "Services/Scripts/queueImproved/player1name.html"
+        'file': config('player1NameFile')
     },
     '2': {
         'username': "",
-        'file': "Services/Scripts/queueImproved/player2name.html"
+        'file': config('player2NameFile')
     }
 }
-
-queueHTMLStart = "" \
-                 "<!DOCTYPE html>" \
-                 "<html lang='en'>" \
-                 "<head>" \
-                 "<meta charset='UTF-8'>" \
-                 "<title>Title</title>" \
-                 "    <link href='queueFormatter.css' rel='stylesheet'>" \
-                 "    <script>" \
-                 "        function reload(){setTimeout(function(){location.reload();},2000)}reload();" \
-                 "    </script>" \
-                 "</head>" \
-                 "<body>" \
-                 "   <div id='player-queue-container'>" \
-                 "        <div id='player-queue-container__header'>" \
-                 "            <h1>Player Queue</h1>" \
-                 "        </div>" \
-                 "        <table>" \
-                 "            <thead>" \
-                 "                <tr>" \
-                 "                    <th style='text-align: left;'>Name</th>" \
-                 "                    <th style='text-align: right;'>Highest Streak</th>" \
-                 "                </tr>" \
-                 "            </thead>" \
-                 "            <tbody>" \
-
-queueHTMLEnd = \
-    "" \
-    "            </tbody>" \
-    "        </table>" \
-    "    </div>" \
-    "</body>" \
-    "</html>"
-
 playerNameHTMLStart = "" \
     "<!DOCTYPE html>" \
     "<html lang='en'>" \
@@ -128,10 +94,9 @@ def Execute(data):
                     get_next_player = False
                     if arg2 == "--next":
                         get_next_player = True
-                    add_set_win_to_current_player(arg0[1], get_next_player)
-
-
-
+                    add_set_win_to_current_player(arg0[2], get_next_player)
+                if arg1 == "next":
+                    pop_next_player(arg0[2])
         else:
             if command == "!openq":
                 open_queue()
@@ -140,7 +105,11 @@ def Execute(data):
             elif command == "!clearq":
                 clear_queue()
             elif command == "!next":
-                pop_next_player(param1)
+                if param1 == "1":
+                    param1 = "2"
+                else:
+                    param1 = "1"
+                add_set_win_to_current_player(param1)
             elif command == "!currentplayer":
                 send_message(nextUser)
             elif command == "!setplayer":
@@ -204,7 +173,7 @@ def clear_current_players():
     clear_scores()
 
 
-def set_current_player(player_side, username, data):
+def set_current_player(player_side, username, data=""):
     """
     Set a player to either player slot. Can take in a player's desired alias too.
     :param player_side: REQUIRED - Integer that represents which player is being added
@@ -223,7 +192,10 @@ def set_current_player(player_side, username, data):
         if username:
             # If there was a username passed in, continue with the rest of the checks
             # Check to see if a displayname was passed in
-            display_name = generate_display_name(data)
+            if data:
+                display_name = generate_display_name(data)
+            else:
+                display_name = username
             # Check to see if we already have the player in our dictionary
             if username not in players:
                 # If we don't have the player in our dictionary, create a new Player instance for them and add to the dictionary
@@ -333,12 +305,9 @@ def set_name(username, data):
         return True
 
 
-def write_player_name_file(displayname, side):
+def write_player_name_file(display_name, side):
     file = open(currentPlayers[side]['file'], "w")
-    file.write(playerNameHTMLStart)
-    stringtowrite = "<div class='player-name player-side-"+side+"'>"+displayname+"</div>"
-    file.write(stringtowrite)
-    file.write(playerNameHTMLEnd)
+    file.write("export default { 'display_name': '" + display_name + "'}")
     file.close()
     return True
 
@@ -430,13 +399,13 @@ def clear_scores():
 
 def display_queue_list_as_chat_message():
     count = 0
-    chatString = "The queue is " + str(len(queue)) + " people deep. "
+    chatString = "The queue is " + str(len(queue.players)) + " people deep. "
 
-    for index, val in enumerate(queue):
+    for index, val in enumerate(queue.players):
         player = players.get(val)
         count = count + 1
         
-        if count == len(queue):
+        if count == len(queue.players):
             chatString = chatString + "#" + str(index + 1) + " - " + str(player.display_name)
         else:
             chatString = chatString + "#" + str(index + 1) + " - " + str(player.display_name) + ', '

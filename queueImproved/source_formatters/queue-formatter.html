@@ -3,7 +3,7 @@
     <head>
         <meta charset='UTF-8'>
         <title>Title</title>
-        <link href='queueFormatter.css' rel='stylesheet'>
+        <link href='queue-formatter.css' rel='stylesheet'>
     </head>
     <body>
         <div id='player-queue-container'>
@@ -24,7 +24,7 @@
     </body>
     <script>
         let time = Math.floor(Date.now() / 1000);
-        const importQueue = () => import('./source_content/queue.js?t=' + time);
+        const importQueue = () => import('../source_content/queue.js?t=' + time);
         let queue = {}
         function loop() {
             importQueue().then(function(resp) {
