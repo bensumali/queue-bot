@@ -1,1 +1,39 @@
-<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><title>Title</title>    <link href='queueFormatter.css' rel='stylesheet'>    <script>        function reload(){setTimeout(function(){location.reload();},2000)}reload();    </script></head><body>   <div id='player-queue-container'>        <div id='player-queue-container__header'>            <h1>Player Queue</h1>        </div>        <table>            <thead>                <tr>                    <th style='text-align: left;'>Name</th>                    <th style='text-align: right;'>Highest Streak</th>                </tr>            </thead>            <tbody><tr>   <td>       <div class='player-queue-player__position'>1)</div>          <div class='player-queue-player__name'>pac0ncrack</div>   </td>   <td class='player-queue-player__streak-container'>       <div class='player-queue-player__streak'>0</div>   </td></tr>            </tbody>        </table>    </div></body></html>
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Title</title>
+    <link href='queueFormatter.css' rel='stylesheet'>
+    <script>        function reload() {
+        setTimeout(function () {
+            location.reload();
+        }, 2000)
+    }
+
+    reload();    </script>
+</head>
+<body>
+<div id='player-queue-container'>
+    <div id='player-queue-container__header'><h1>Player Queue</h1></div>
+    <table>
+        <thead>
+        <tr>
+            <th style='text-align: left;'>Name</th>
+            <th style='text-align: right;'>Highest Streak</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <div class='player-queue-player__position'>1)</div>
+                <div class='player-queue-player__name'>pac0ncrack</div>
+            </td>
+            <td class='player-queue-player__streak-container'>
+                <div class='player-queue-player__streak'>0</div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

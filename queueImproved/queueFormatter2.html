@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset='UTF-8'>
+        <title>Title</title>
+        <link href='queueFormatter.css' rel='stylesheet'>
+    </head>
+    <body>
+        <div id='player-queue-container'>
+            <div id='player-queue-container__header'>
+                <h1>Player Queue</h1>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style='text-align: left;'>Name</th>
+                        <th style='text-align: right;'>Highest Streak</th>
+                    </tr>
+                </thead>
+                <tbody id="player-queue-container__body">
+                </tbody>
+            </table>
+        </div>
+    </body>
+    <script>
+        let time = Math.floor(Date.now() / 1000);
+        const importQueue = () => import('./source_content/queue.js?t=' + time);
+        function loop() {
+            importQueue().then(function(resp) {
+                const queue = resp.default;
+                const elementId = "player-queue-container__body";
+                document.getElementById(elementId).innerHTML = "";
+                if(queue.hasOwnProperty('players')) {
+                    for(let k in queue.players) {
+                        let player = queue.players[k];
+                        let index = parseInt(k) + 1;
+                        let tr = document.createElement("tr");
+                        let td1 = document.createElement("td");
+
+                        let position = document.createElement("div");
+                        position.classList.add("player-queue-player__position");
+                        position.innerHTML = index + ") ";
+
+                        let name = document.createElement("div");
+                        name.classList.add("player-queue-player__name");
+                        name.innerHTML = player;
+
+                        let td2 = document.createElement("td");
+                        td2.classList.add("player-queue-player__streak-container");
+
+                        let streak = document.createElement("div");
+                        streak.classList.add("player-queue-player__streak");
+                        streak.innerHTML = "0";
+
+                        td1.appendChild(position);
+                        td1.appendChild(name);
+                        tr.appendChild(td1);
+                        td2.appendChild(streak);
+                        tr.appendChild(td2);
+
+                        document.getElementById("player-queue-container__body").appendChild(tr);
+
+                    }
+
+                }
+                time = Math.floor(Date.now() / 1000);
+                setTimeout(loop, 1000)
+            });
+        }
+        loop();
+    </script>
+</html>

@@ -42,6 +42,9 @@ td {
 td > div {
     display: inline-block;
 }
+.player-queue-player__position {
+    margin-right: 5px;
+}
 .player-queue-player__streak-container {
     text-align: right;
 }
