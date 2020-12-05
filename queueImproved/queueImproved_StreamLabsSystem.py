@@ -475,8 +475,8 @@ def update_current_player_name(username, player_side):
 
 def add_player_record(username): 
     if username not in players:
-            new_player = Player(username)
-            players[username] = new_player
+        new_player = Player(username)
+        players[username] = new_player
 
 def swap_current_players():
     player_1 = currentPlayers['1']
