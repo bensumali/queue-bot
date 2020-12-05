@@ -241,7 +241,7 @@ def set_current_player(player_side, username, data=""):
             player = players[username]
             # Map the currentPlayers dictionary with the user's username. We can grab the appropriate info from the players dictionary
             currentPlayers[player_side]['username'] = username
-            player.set_wins(0)
+            player.set_set_wins(0)
             write_player_file(display_name, 'name', player_side)
             write_player_file(player.get_current_match_wins(), 'score', player_side)
             write_player_file(player.get_current_set_streak(), 'streak', player_side)
