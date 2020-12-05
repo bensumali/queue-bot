@@ -2,6 +2,11 @@
   font-family: 'VCR OSD Mono';
   src: url(VCR_OSD_MONO_1.001.ttf);
 }
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
 html {
     overflow: hidden
 }
@@ -42,6 +47,9 @@ td {
 td > div {
     display: inline-block;
 }
+.player-queue-player__position {
+    margin-right: 5px;
+}
 .player-queue-player__streak-container {
     text-align: right;
 }
@@ -49,4 +57,9 @@ td > div {
     text-align: center;
     padding-bottom: 10px;
     background-color: #ff0000;
+}
+.player-queue-player__no-players {
+    animation: blinker 1s linear infinite;
+    text-align: center;
+    padding-bottom: 10px;
 }

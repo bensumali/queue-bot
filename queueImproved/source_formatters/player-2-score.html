@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href='player-score.css' rel='stylesheet'>
+</head>
+<body>
+    <div id="player-score"></div>
+</body>
+<script>
+    let time = Math.floor(Date.now() / 1000);
+    const importPlayer2Score = () => import('../source_content/player-2-score.js?t=' + time);
+    let currentScore = "0";
+    function loop() {
+        importPlayer2Score().then(function (resp) {
+            const score = resp.default.score;
+            if(currentScore != score) {
+                currentScore = score;
+                if (score)
+                    document.getElementById("player-score").innerHTML = score;
+            }
+            time = Math.floor(Date.now() / 1000);
+            setTimeout(loop, 1000)
+        });
+    }
+    loop();
+</script>
+</html>

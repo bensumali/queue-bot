@@ -1,0 +1,31 @@
+@font-face {
+  font-family: 'VCR OSD Mono';
+  src: url(VCR_OSD_MONO_1.001.ttf);
+}
+html {
+    overflow: hidden
+}
+body {
+    font-family: 'VCR OSD Mono';
+    margin: 0px; overflow: hidden;
+    padding: 0px;
+}
+#fire {
+    position: relative;
+}
+#fire img {
+    height: 43px;
+    width: 43px;
+}
+#player-streak {
+    color: #FF3D00;
+    font-size: 20px;
+    position: absolute;
+    width: 43px;
+    text-align: center;
+    top: 20px;
+    left: 0;
+}
+.hide {
+    display: none;
+}

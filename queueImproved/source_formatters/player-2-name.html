@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset='UTF-8'>
+        <title>Title</title>
+        <link href='player-name.css' rel='stylesheet'>
+    </head>
+    <body>
+        <div id="player-name" class='player-name player-side-2'></div>
+    </body>
+    <script>
+        let time = Math.floor(Date.now() / 1000);
+        const importPlayer2Name = () => import('../source_content/player-2-name.js?t=' + time);
+        let currentName = "";
+        function loop() {
+            importPlayer2Name().then(function (resp) {
+                const display_name = resp.default.name;
+                if(currentName != display_name) {
+                    currentName = display_name;
+                    if (display_name)
+                        document.getElementById("player-name").innerHTML = display_name;
+                }
+                time = Math.floor(Date.now() / 1000);
+                setTimeout(loop, 1000)
+            });
+        }
+        loop();
+    </script>
+</html>
