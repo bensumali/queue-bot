@@ -4,6 +4,9 @@ Description = "Reimplementation of queue with better control"
 Creator = "pac0ncrack"
 Version = "1.0.0"
 
+import sys
+sys.path.append('.\Services\Scripts\queueImproved')
+
 queue = []
 queueFile = "Services/Scripts/queueImproved/queueFormatter.html"
 player1NameFile = "C:\Users\Kiet\Desktop\Streaming\Player 1.txt"
@@ -112,22 +115,22 @@ class Player:
         self.set_streak = int(set_streak)
         self.highest_set_streak = int(highest_set_streak)
 
-    def set_display_name(name):
+    def set_display_name(self, name):
         self.display_name = name
 
-    def add_match_win():
+    def add_match_win(self):
         ++self.match_wins
 
-    def remove_match_win():
+    def remove_match_win(self):
         --self.match_wins
 
-    def clear_set_match_wins():
+    def clear_set_match_wins(self):
         self.set_wins = 0
 
-    def set_match_wins(wins):
+    def set_match_wins(self, wins):
         self.match_wins = wins
 
-    def add_set_win():
+    def add_set_win(self):
         ++self.set_wins
         if self.set_wins > self.highest_set_streak:
             self.highest_set_streak = self.set_wins
