@@ -109,7 +109,7 @@ def Execute(data):
     param1 = data.GetParam(1).lower()
     param2 = data.GetParam(2).lower()
     param3 = data.GetParam(3).lower()
-    
+
     # Commands that are only for mods.
     if Parent.HasPermission(data.User, "Moderator", ""):
         if command == "!openq":
@@ -136,34 +136,22 @@ def Execute(data):
             increment_score(player1ScoreFile)
         elif command == "!p2w":
             increment_score(player2ScoreFile)
-        elif command == "!p1s": 
+        elif command == "!p1s":
             write_to_file(player1ScoreFile, param1)
         elif command == "!p2s":
             write_to_file(player2ScoreFile, param1)
-        elif command == "!cs": 
+        elif command == "!cs":
             clear_scores()
-        
-            
-        
-
     if command == "!leave":
         remove_from_queue(data.User)
     elif command == "!setname":
         set_name(data.User, data)
-    elif command == "!list": 
+    elif command == "!list":
         display_queue_list_as_chat_message()
     elif command == "!queue":
         display_queue_list_as_chat_message()
-
-    if queueOpen:
-        # Commands available when the queue is open
-        if command == "!join":
-            join_queue(data.User)
-    elif not queueOpen:
-        # Spits out error messages if users try to join on a closed queue
-        if command == "!join":
-            send_message(messageJoinQueueClosed)
-
+    elif command == "!join":
+        join_queue(data.User)
     return
 
 
@@ -262,21 +250,22 @@ def join_queue(username):
     :return: bool
     """
     global players
-    userToAdd = username
-    
-    if is_currently_playing(username) == True:
-        send_message("You can't join the queue while playing.")
+    global queue
+    if not queue.is_open:
+        send_message(messageJoinQueueClosed)
         return False
-
-    if userToAdd not in queue:
-        queue.append(userToAdd)
-        add_player_record(userToAdd)
-        send_message("@" + userToAdd + ", you have entered the queue. Pos: #" + str(len(queue)) + "!")
-        write_queue_to_file()
-        return True
     else:
-        send_message("Dafuq, @" + userToAdd + ", you already in line. You #" + str(queue.index(userToAdd) + 1) + ".")
-        return False
+        if is_currently_playing(username):
+            send_message("You can't join the queue while playing.")
+            return False
+        if queue.add_player(username):
+            add_player_record(username)
+            send_message("@" + username + ", you have entered the queue. Pos: #" + str(len(queue.players)) + "!")
+            write_queue_to_file()
+            return True
+        else:
+            send_message("Dafuq, @" + username + ", you already in line. You #" + str(queue.players.index(username) + 1) + ".")
+            return False
 
 
 def send_message(message):
@@ -322,21 +311,7 @@ def write_queue_to_file():
     for index, val in enumerate(queue.players):
         # if val != queueClosedPlayer:
         player = players.get(val)
-        string_to_write = str(player.display_name) + ", "
-
-            # stringToWrite = "<tr>"\
-            #                 "   <td>"\
-            #                 "       <div class='player-queue-player__position'>" + str(index + 1) + ")</div>"\
-            #                 "          <div class='player-queue-player__name'>" + str(player.display_name) + "</div>"\
-            #                 "   </td>"\
-            #                 "   <td class='player-queue-player__streak-container'>"\
-            #                 "       <div class='player-queue-player__streak'>" + str(player.highest_set_streak) + "</div>"\
-            #                 "   </td>"\
-            #                 "</tr>"
-        # else:
-        #     stringToWrite = "<tr>" \
-        #                     "   <td class='player-queue-player__closed' colspan='2'>" + str(queueClosedPlayer) + "</td>" \
-        #                     "</tr>"
+        string_to_write = "'" + str(player.display_name) + "', "
         file.write(string_to_write)
     file.write("], 'is_open': " + str(queue.is_queue_open()).lower() + " }")
     file.close()
@@ -387,11 +362,13 @@ def pop_next_player(player_side):
     write_queue_to_file()
     return True
 
+
 def is_currently_playing(username):
     if currentPlayers['1']['username'] == username or currentPlayers['2']['username'] == username:
         return True
     else:
         return False
+
 
 def update_current_player_name(username, player_side):
     
@@ -404,10 +381,13 @@ def update_current_player_name(username, player_side):
         currentPlayers['2']['username'] = username
         write_to_file(config('player2NameFile'), username)
 
+
 def add_player_record(username): 
     if username not in players:
         new_player = Player(username)
         players[username] = new_player
+        return True
+    return False
 
 def swap_current_players():
     player_1 = currentPlayers['1']
