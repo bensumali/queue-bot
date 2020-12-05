@@ -6,6 +6,9 @@ Version = "1.0.0"
 
 import sys
 sys.path.append('.\Services\Scripts\queueImproved')
+from decouple import config
+
+test = config('USER')
 
 queue = []
 queueFile = "Services/Scripts/queueImproved/queueFormatter.html"
@@ -166,6 +169,7 @@ def Init():
     return
 
 def Execute(data):
+
     global queueOpen
     global queue
     global nextUser
