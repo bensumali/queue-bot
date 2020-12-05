@@ -8,6 +8,8 @@ queue = []
 queueFile = "Services/Scripts/queueImproved/queueFormatter.html"
 player1NameFile = "C:\Users\Kiet\Desktop\Streaming\Player 1.txt"
 player2NameFile = "C:\Users\Kiet\Desktop\Streaming\Player 2.txt"
+player1ScoreFile = "C:\Users\Kiet\Desktop\Streaming\Player 1 Score.txt"
+player2ScoreFile = "C:\Users\Kiet\Desktop\Streaming\Player 2 Score.txt"
 queueOpen = False
 queueMaxCapacity = 10
 queueClosedPlayer = "QUEUE IS CLOSED"
@@ -190,14 +192,32 @@ def Execute(data):
         elif command == "!swap":
             swap_current_players()
         elif command == "!p1":
-            update_current_player_name(param1, 1)
+            update_current_player_name(generate_display_name(data), 1)
         elif command == "!p2":
-            update_current_player_name(param1, 2)
+            update_current_player_name(generate_display_name(data), 2)
+        elif command == "!p1w":
+            increment_score(player1ScoreFile)
+        elif command == "!p2w":
+            increment_score(player2ScoreFile)
+        elif command == "!p1s": 
+            write_to_file(player1ScoreFile, param1)
+        elif command == "!p2s":
+            write_to_file(player2ScoreFile, param1)
+        elif command == "!cs": 
+            clear_scores()
+        
+            
+        
 
     if command == "!leave":
         remove_from_queue(data.User)
     elif command == "!setname":
         set_name(data.User, data)
+    elif command == "!list": 
+        display_queue_list_as_chat_message()
+    elif command == "!queue":
+        display_queue_list_as_chat_message()
+
     if queueOpen:
         # Commands available when the queue is open
         if command == "!join":
@@ -267,6 +287,7 @@ def open_queue(fresh=False):
         write_player_name_file('', '2')
         update_current_player_name('', 1)
         update_current_player_name('', 2)
+        clear_scores()
         send_message(messageQueueOpen)
     else:
         send_message(messageQueueAlreadyOpen)
@@ -389,14 +410,6 @@ def write_queue_to_file():
     file.close()
     return
 
-
-def update_player_name_file(fileLocation, name):
-    file = open(fileLocation, "w")
-    file.write(name)
-    file.close()
-    return
-
-
 def close_queue():
     # Close the queue. Won't work if queue isn't open
     global queueOpen
@@ -416,7 +429,7 @@ def pop_next_player(player_side):
     send_message("@" + next_user + ", you're up next!")
 
     if player_side == "1":
-        update_player_name_file(player1NameFile, next_user)
+        write_to_file(player1NameFile, next_user)
 
         # Because the player is being set in P1, 
         # that means P2 is the winner of the last set.
@@ -428,7 +441,7 @@ def pop_next_player(player_side):
             if player2username in players:
                 players[player2username].add_set_win
     else:
-        update_player_name_file(player2NameFile, next_user)
+        write_to_file(player2NameFile, next_user)
 
         # Because the player is being set in P2, 
         # that means P1 is the winner of the last set.
@@ -443,31 +456,27 @@ def pop_next_player(player_side):
     write_queue_to_file()
     return True
 
-
 def is_currently_playing(username):
     if currentPlayers['1']['username'] == username or currentPlayers['2']['username'] == username:
         return True
     else:
         return False
 
-
-def update_current_player_name(username, player_side) :
+def update_current_player_name(username, player_side):
     
     add_player_record(username)
 
     if player_side == 1:
         currentPlayers['1']['username'] = username
-        update_player_name_file(player1NameFile, username)
+        write_to_file(player1NameFile, username)
     else:
         currentPlayers['2']['username'] = username
-        update_player_name_file(player2NameFile, username)
-
+        write_to_file(player2NameFile, username)
 
 def add_player_record(username): 
     if username not in players:
             new_player = Player(username)
             players[username] = new_player
-
 
 def swap_current_players():
     player_1 = currentPlayers['1']
@@ -476,10 +485,41 @@ def swap_current_players():
     currentPlayers['1'] = player_2
     currentPlayers['2'] = player_1
 
-    update_player_name_file(player1NameFile, player_2['username'])
-    update_player_name_file(player2NameFile, player_1['username'])
+    write_to_file(player1NameFile, player_2['username'])
+    write_to_file(player2NameFile, player_1['username'])
     return True
 
+def increment_score(fileLocation):
+    fileReader = open(fileLocation, "r")
+    currentScore = int(fileReader.read())
+    currentScore = currentScore + 1
+    fileReader.close
 
-def reset_current_scores():
-    return True
+    write_to_file(fileLocation, str(currentScore))
+
+def clear_scores(): 
+    write_to_file(player1ScoreFile, "0")
+    write_to_file(player2ScoreFile, "0")
+
+def display_queue_list_as_chat_message():
+    count = 0
+    chatString = "The queue is " + str(len(queue)) + " people deep. "
+
+    for index, val in enumerate(queue):
+        player = players.get(val)
+        count = count + 1
+        
+        if count == len(queue):
+            chatString = chatString + "#" + str(index + 1) + " - " + str(player.display_name)
+        else:
+            chatString = chatString + "#" + str(index + 1) + " - " + str(player.display_name) + ', '
+        
+    
+    send_message(chatString)
+
+def write_to_file(fileLocation, text):
+    file = open(fileLocation, "w")
+    file.write(text)
+    file.close()
+
+
