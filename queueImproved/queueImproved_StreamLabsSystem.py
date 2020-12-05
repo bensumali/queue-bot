@@ -112,36 +112,57 @@ def Execute(data):
 
     # Commands that are only for mods.
     if Parent.HasPermission(data.User, "Moderator", ""):
-        if command == "!openq":
-            open_queue()
-        elif command == "!closeq":
-            close_queue()
-        elif command == "!clearq":
-            clear_queue()
-        elif command == "!next":
-            pop_next_player(param1)
-        elif command == "!currentplayer":
-            send_message(nextUser)
-        elif command == "!setplayer":
-            set_player(param1, param2, data)
-        elif command == "!removeplayer":
-            remove_from_queue(param1)
-        elif command == "!swap":
-            swap_current_players()
-        elif command == "!p1":
-            update_current_player_name(generate_display_name(data), 1)
-        elif command == "!p2":
-            update_current_player_name(generate_display_name(data), 2)
-        elif command == "!p1w":
-            increment_score(player1ScoreFile)
-        elif command == "!p2w":
-            increment_score(player2ScoreFile)
-        elif command == "!p1s":
-            write_to_file(player1ScoreFile, param1)
-        elif command == "!p2s":
-            write_to_file(player2ScoreFile, param1)
-        elif command == "!cs":
-            clear_scores()
+        if data.IsWhisper():
+            arg0 = data.GetParam(0)
+            arg1 = data.GetParam(1)
+            arg2 = data.GetParam(2)
+            if arg0 == "!queue":
+                if arg1 == "close":
+                    close_queue()
+                elif arg1 == "open":
+                    open_queue()
+                elif arg1 == "clear":
+                    clear_queue()
+            elif arg0 == "!p1" or arg0 == "!p2":
+                if arg1 == "wins:set":
+                    get_next_player = False
+                    if arg2 == "--next":
+                        get_next_player = True
+                    add_set_win_to_current_player(arg0[1], get_next_player)
+
+
+
+        else:
+            if command == "!openq":
+                open_queue()
+            elif command == "!closeq":
+                close_queue()
+            elif command == "!clearq":
+                clear_queue()
+            elif command == "!next":
+                pop_next_player(param1)
+            elif command == "!currentplayer":
+                send_message(nextUser)
+            elif command == "!setplayer":
+                set_current_player(param1, param2, data)
+            elif command == "!removeplayer":
+                remove_from_queue(param1)
+            elif command == "!swap":
+                swap_current_players()
+            elif command == "!p1":
+                update_current_player_name(generate_display_name(data), 1)
+            elif command == "!p2":
+                update_current_player_name(generate_display_name(data), 2)
+            elif command == "!p1w":
+                increment_score(player1ScoreFile)
+            elif command == "!p2w":
+                increment_score(player2ScoreFile)
+            elif command == "!p1s":
+                write_to_file(player1ScoreFile, param1)
+            elif command == "!p2s":
+                write_to_file(player2ScoreFile, param1)
+            elif command == "!cs":
+                clear_scores()
     if command == "!leave":
         remove_from_queue(data.User)
     elif command == "!setname":
@@ -159,6 +180,22 @@ def Tick():
     return
 
 
+def add_set_win_to_current_player(player_side, get_next_player=False):
+    global queue
+    if player_side == "1":
+        losing_player_side = "2"
+    else:
+        losing_player_side = "1"
+    losing_player_username = currentPlayers[losing_player_side]['username']
+    if losing_player_username in players:
+        players[losing_player_username].reset_set_streak()
+    winning_player_username = currentPlayers[player_side]['username']
+    if winning_player_username in players:
+        players[winning_player_username].add_set_win
+    pop_next_player(losing_player_side)
+    return True
+
+
 def clear_current_players():
     write_player_name_file('', '1')
     write_player_name_file('', '2')
@@ -167,7 +204,7 @@ def clear_current_players():
     clear_scores()
 
 
-def set_player(player_side, username, data):
+def set_current_player(player_side, username, data):
     """
     Set a player to either player slot. Can take in a player's desired alias too.
     :param player_side: REQUIRED - Integer that represents which player is being added
@@ -231,7 +268,9 @@ def generate_display_name(data):
 
 def clear_queue():
     global queue
-    return queue.clear_queue()
+    if queue.clear_queue():
+        write_queue_to_file()
+        send_message("Queue is now empty.")
 
 
 def remove_from_queue(username):
@@ -332,33 +371,10 @@ def close_queue():
 
 
 def pop_next_player(player_side):
-    next_user = queue.pop(0)
-    loser_user = currentPlayers[player_side]['username']
-    currentPlayers[player_side]['username'] = next_user
-    send_message("@" + next_user + ", you're up next!")
-
-    if player_side == "1":
-        write_to_file(player1NameFile, next_user)
-
-        # Because the player is being set in P1, 
-        # that means P2 is the winner of the last set.
-        # Increment the player 2 winstreak
-        # Get p2's username
-        player2username = currentPlayers['2']['username']
-        # Get the player'2s record
-        if not player2username:
-            if player2username in players:
-                players[player2username].add_set_win
-    else:
-        write_to_file(player2NameFile, next_user)
-
-        # Because the player is being set in P2, 
-        # that means P1 is the winner of the last set.
-        # Increment the player 1 winstreak
-        player1username = currentPlayers['1']['username']
-        if not player1username:
-            if player1username in players:
-                players[player1username].add_set_win
+    global queue
+    next_player = queue.players.pop(0)
+    send_message("@" + next_player + ", you're up next!")
+    set_current_player(player_side, next_player)
     write_queue_to_file()
     return True
 

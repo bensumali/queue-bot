@@ -42,3 +42,12 @@ class Player:
         ++self.set_wins
         if self.set_wins > self.highest_set_streak:
             self.highest_set_streak = self.set_wins
+
+    def reset_set_streak(self):
+        self.set_streak = 0
+        self.match_streak = 0
+        return True
+
+    def reset_match_streak(self):
+        self.match_streak = 0
+        return True
