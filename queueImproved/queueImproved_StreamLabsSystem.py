@@ -6,16 +6,15 @@ Version = "1.0.0"
 
 import sys
 sys.path.append('.\Services\Scripts\queueImproved')
-from decouple import config
 
-test = config('USER')
+from decouple import config
+from player import Player
+from message import Message
+
 
 queue = []
 queueFile = "Services/Scripts/queueImproved/queueFormatter.html"
-player1NameFile = "C:\Users\Kiet\Desktop\Streaming\Player 1.txt"
-player2NameFile = "C:\Users\Kiet\Desktop\Streaming\Player 2.txt"
-player1ScoreFile = "C:\Users\Kiet\Desktop\Streaming\Player 1 Score.txt"
-player2ScoreFile = "C:\Users\Kiet\Desktop\Streaming\Player 2 Score.txt"
+
 queueOpen = False
 queueMaxCapacity = 10
 queueClosedPlayer = "QUEUE IS CLOSED"
@@ -93,76 +92,6 @@ playerNameHTMLStart = "" \
 playerNameHTMLEnd = "" \
     "</body>" \
     "</html>"
-
-
-class Player:
-    def __init__(self, username, display_name="", match_wins=0, match_streak=0, highest_match_streak=0, set_wins=0, set_streak=0, highest_set_streak=0):
-        """
-        :param username: REQUIRED - Username this object represents
-        :param display_name: OPTIONAL - Alias that the user wants to be represented as on stream
-        :param match_wins: OPTIONAL - Current amount of matches won by this player. Defaults to 0.
-        :param match_streak: OPTIONAL - Current amount of concurrent matches won by this player. Defaults to 0.
-        :param highest_match_streak: OPTIONAL - Highest amount of concurrent matches won by this player. Defaults to 0.
-        :param set_wins: OPTIONAL - Current amount of sets won by this player. Defaults to 0.
-        :param set_streak: OPTIONAL - Current number of concurrent sets this player has won. Defaults to 0.
-        :param highest_set_streak:  OPTIONAL - Highest amount of concurrent sets won by this player. Defaults to 0.
-        """
-        self.username = username
-        if not display_name:
-            self.display_name = username
-        else:
-            self.display_name = display_name
-
-        self.match_wins = int(match_wins)
-        self.match_streak = int(match_streak)
-        self.highest_match_streak = int(highest_match_streak)
-        self.set_wins = int(set_wins)
-        self.set_streak = int(set_streak)
-        self.highest_set_streak = int(highest_set_streak)
-
-    def set_display_name(self, name):
-        self.display_name = name
-
-    def add_match_win(self):
-        ++self.match_wins
-
-    def remove_match_win(self):
-        --self.match_wins
-
-    def clear_set_match_wins(self):
-        self.set_wins = 0
-
-    def set_match_wins(self, wins):
-        self.match_wins = wins
-
-    def add_set_win(self):
-        ++self.set_wins
-        if self.set_wins > self.highest_set_streak:
-            self.highest_set_streak = self.set_wins
-
-
-class Message:
-    def __init__(self, command, type, param1, param2):
-        self.command = command
-        self.type = type
-        self.param1 = param1
-        self.param2 = param2
-
-    def text(self):
-        text = ""
-        if self.command == '!setplayer':
-            if self.type == 'success':
-                text = "@" + self.param2 + " has been set as player " + self.param1
-            elif self.type == 'error':
-                if not self.param1:
-                    text = "Error: Specify if you are adding player 1 or 2"
-                elif not self.param2:
-                    playerSide = "player " + self.param1
-                    text = "Error: Can't add " + playerSide + " without a name"
-        return text
-
-
-
 
 def Init():
 
@@ -475,10 +404,10 @@ def update_current_player_name(username, player_side):
 
     if player_side == 1:
         currentPlayers['1']['username'] = username
-        write_to_file(player1NameFile, username)
+        write_to_file(config('player1NameFile'), username)
     else:
         currentPlayers['2']['username'] = username
-        write_to_file(player2NameFile, username)
+        write_to_file(config('player2NameFile'), username)
 
 def add_player_record(username): 
     if username not in players:
@@ -505,8 +434,8 @@ def increment_score(fileLocation):
     write_to_file(fileLocation, str(currentScore))
 
 def clear_scores(): 
-    write_to_file(player1ScoreFile, "0")
-    write_to_file(player2ScoreFile, "0")
+    write_to_file(config('player1ScoreFile'), "0")
+    write_to_file(config('player2ScoreFile'), "0")
 
 def display_queue_list_as_chat_message():
     count = 0
