@@ -33,7 +33,7 @@ class Queue:
             if self.is_open or ignore_close is True:
                 if len(self.players) < self.max_capacity:
                     if position > -1:
-                        self.players.insert(position, username)
+                        self.players.insert(int(position), username)
                     else:
                         self.players.append(username)
                     return True

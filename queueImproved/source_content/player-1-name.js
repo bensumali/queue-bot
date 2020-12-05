@@ -1,1 +1,1 @@
-export default { 'display_name': 'pac0ncrack1'}
+export default { 'name': 'pac0ncrack1'}

@@ -3,7 +3,7 @@
     <head>
         <meta charset='UTF-8'>
         <title>Title</title>
-            <link href='player-name-score.css' rel='stylesheet'>
+            <link href='player-name.css' rel='stylesheet'>
     </head>
     <body>
         <div id="player-name" class='player-name player-side-1'></div>
@@ -14,12 +14,11 @@
         let currentName = "";
         function loop() {
             importPlayer1Name().then(function (resp) {
-                const display_name = resp.default.display_name;
+                const display_name = resp.default.name;
                 if(currentName != display_name) {
                     currentName = display_name;
                     if (display_name)
                         document.getElementById("player-name").innerHTML = display_name;
-                    console.log("here");
                 }
                 time = Math.floor(Date.now() / 1000);
                 setTimeout(loop, 1000)

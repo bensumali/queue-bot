@@ -1,1 +1,1 @@
-export default { 'players': [], 'is_open': true }
+export default { 'players': ['samtruong200', 'pac0ncrack', ], 'is_open': true }

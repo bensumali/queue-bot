@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href='player-streak.css' rel='stylesheet'>
+</head>
+<body>
+    <div id="fire">
+        <img src="fire_gif.gif" />
+        <div id="player-streak"></div>
+    </div>
+</body>
+<script>
+    let time = Math.floor(Date.now() / 1000);
+    const importPlayer2Streak = () => import('../source_content/player-2-streak.js?t=' + time);
+    let currentStreak = "0";
+    function loop() {
+        importPlayer2Streak().then(function (resp) {
+            const streak = resp.default.streak;
+            if(currentStreak != streak) {
+                currentStreak = streak;
+                if (streak != "0") {
+                    document.getElementById("player-streak").innerHTML = streak;
+                    document.getElementById("fire").classList.remove('hide');
+                }
+                else {
+                    document.getElementById("fire").classList.add('hide');
+                }
+            }
+            if(currentStreak == "0") {
+                document.getElementById("fire").classList.add('hide');
+            }
+            time = Math.floor(Date.now() / 1000);
+            setTimeout(loop, 1000)
+        });
+    }
+    loop();
+</script>
+</html>
