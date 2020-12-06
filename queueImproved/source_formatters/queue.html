@@ -31,7 +31,6 @@
                 const newQueue = resp.default;
                 const elementId = "player-queue-container__body";
                 if(newQueue !== queue) {
-                    console.log("here");
                     queue = newQueue;
                     document.getElementById(elementId).innerHTML = "";
                     if (queue.hasOwnProperty('players')) {

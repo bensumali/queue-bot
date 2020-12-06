@@ -10,7 +10,7 @@ sys.path.append('.\Services\Scripts\queueImproved')
 from decouple import config
 from player import Player
 from message import Message
-from queue import Queue
+from queue_new import Queue
 
 
 queue = Queue()
