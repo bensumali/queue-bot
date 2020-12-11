@@ -33,10 +33,10 @@ class Player:
         self.display_name = name
 
     def add_match_win(self):
-        self.match_wins = self.match_wins + 1
+        self.match_wins = int(self.match_wins) + 1
 
     def remove_match_win(self):
-        self.match_wins = self.match_wins - 1
+        self.match_wins = int(self.match_wins) - 1
 
     def clear_set_match_wins(self):
         self.set_wins = 0
@@ -53,10 +53,10 @@ class Player:
         return True
 
     def add_set_win(self):
-        self.set_wins = self.set_wins + 1
-        self.set_streak = self.set_streak + 1
+        self.set_wins = int(self.set_wins) + 1
+        self.set_streak = int(self.set_streak) + 1
         if self.set_wins > self.highest_set_streak:
-            self.highest_set_streak = self.set_wins
+            self.highest_set_streak = int(self.set_wins)
 
     def reset_streaks(self):
         self.set_wins = 0

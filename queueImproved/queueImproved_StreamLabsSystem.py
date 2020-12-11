@@ -190,13 +190,13 @@ def add_set_win_to_current_player(player_side, get_next_player=False):
 
 
 def set_match_wins_of_current_player(player_side, wins):
-    player_username = currentPlayers["1"]["username"]
+    player_username = currentPlayers[str(player_side)]["username"]
     player = players[player_username]
     send_message("Set @" + player.username + "'s match wins to " + wins)
     return player.set_match_wins(wins)
 
 def set_set_wins_of_current_player(player_side, wins):
-    player_username = currentPlayers["1"]["username"]
+    player_username = currentPlayers[str(player_side)]["username"]
     player = players[player_username]
     send_message("Set @" + player.username + "'s set wins to " + wins)
     return player.set_set_wins(wins)
