@@ -153,7 +153,7 @@ def Tick():
 
 
 def add_match_win_to_current_player(player_side):
-    player = players[currentPlayers[player_side]["username"]]
+    player = players[currentPlayers[str(player_side)]["username"]]
     player.add_match_win()
     write_player_file(player.get_current_match_wins(), 'score', player_side)
     if currentPlayers['1']["username"]:
@@ -235,7 +235,7 @@ def set_current_player(player_side, username, data=""):
                 players[username] = new_player
             player = players[username]
             # Map the currentPlayers dictionary with the user's username. We can grab the appropriate info from the players dictionary
-            currentPlayers[player_side]['username'] = username
+            currentPlayers[str(player_side)]['username'] = username
             player.set_set_wins(0)
             write_player_file(display_name, 'name', player_side)
             write_player_file(player.get_current_match_wins(), 'score', player_side)

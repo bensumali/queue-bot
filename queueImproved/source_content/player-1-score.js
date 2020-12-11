@@ -1,1 +1,1 @@
-export default { 'score': '0'}
+export default { 'score': '1'}
