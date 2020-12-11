@@ -185,7 +185,8 @@ def add_set_win_to_current_player(player_side, get_next_player=False):
         winning_player.add_set_win()
         write_player_file(winning_player.get_current_set_streak(), 'streak', player_side)
         send_message("@" + winning_player.username + " won the set!")
-    pop_next_player(losing_player_side)
+    if get_next_player:
+        pop_next_player(losing_player_side)
     return True
 
 
@@ -394,7 +395,9 @@ def pop_next_player(player_side):
     if len(queue.players) > 0:
         next_player = queue.players.pop(0)
         send_message("@" + next_player + ", you're up next!")
+        clear_scores()
         set_current_player(player_side, next_player)
+        clear_scores()
         write_queue_to_file()
     else:
         send_message("No one's got next. Sure is lonely in here...")
@@ -450,6 +453,14 @@ def increment_score(fileLocation):
 
 
 def clear_scores():
+    player1username = currentPlayers["1"]["username"]
+    player2username = currentPlayers["2"]["username"]
+    if player1username:
+        player1 = players[player1username]
+        player1.set_wins(0)
+    if player2username:
+        player2 = players[player2username]
+        player2.set_wins(0)
     write_player_file('0', 'score', 1)
     write_player_file('0', 'score', 2)
 
