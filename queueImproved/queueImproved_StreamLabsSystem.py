@@ -205,8 +205,6 @@ def set_set_wins_of_current_player(player_side, wins):
 def clear_current_players():
     write_player_file('', 'name', '1')
     write_player_file('', 'name', '2')
-    update_current_player_name('', 1)
-    update_current_player_name('', 2)
     clear_scores()
 
 
@@ -346,7 +344,7 @@ def set_name(username, data):
 
 
 def write_player_file(value, file_type, side):
-    file = open(currentPlayers[side]['files'][file_type], "w")
+    file = open(currentPlayers[str(side)]['files'][file_type], "w")
     file.write("export default { '" + str(file_type) + "': '" + str(value) + "'}")
     file.close()
     return True
@@ -404,10 +402,10 @@ def update_current_player_name(username, player_side):
 
     if player_side == 1:
         currentPlayers['1']['username'] = username
-        write_to_file(config('player1NameFile'), username)
+        write_player_file(username, 'name', player_side)
     else:
         currentPlayers['2']['username'] = username
-        write_to_file(config('player2NameFile'), username)
+        write_player_file(username, 'name', player_side)
 
 
 def add_player_record(username): 
