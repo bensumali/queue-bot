@@ -120,7 +120,6 @@ def Execute(data):
             elif command == "!removeplayer":
                 remove_from_queue(param1)
             elif command == "!swap":
-            elif command == "!swap":
                 swap_current_players()
             elif command == "!p1":
                 update_current_player_name(generate_display_name(data), 1)
