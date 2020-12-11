@@ -179,7 +179,7 @@ def add_set_win_to_current_player(player_side, get_next_player=False):
     losing_player_username = currentPlayers[losing_player_side]['username']
     if losing_player_username in players:
         players[losing_player_username].reset_streaks()
-    winning_player_username = currentPlayers[player_side]['username']
+    winning_player_username = currentPlayers[str(player_side)]['username']
     if winning_player_username in players:
         winning_player = players[winning_player_username]
         winning_player.add_set_win()
