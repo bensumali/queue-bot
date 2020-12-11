@@ -203,6 +203,14 @@ def set_set_wins_of_current_player(player_side, wins):
 
 
 def clear_current_players():
+    player1username = currentPlayers["1"]["username"]
+    player2username = currentPlayers["2"]["username"]
+    if player1username:
+        players[player1username].reset_streaks()
+    if player2username:
+        players[player2username].reset_streaks()
+    currentPlayers["1"]["username"] = ""
+    currentPlayers["2"]["username"] = ""
     write_player_file('', 'name', '1')
     write_player_file('', 'name', '2')
     clear_scores()
@@ -253,7 +261,7 @@ def open_queue():
     if not queue.is_queue_open():
         queue.open_queue()
         write_queue_to_file()
-        # clear_current_players()
+        clear_current_players()
         send_message(messageQueueOpen)
     else:
         send_message(messageQueueAlreadyOpen)
