@@ -211,6 +211,8 @@ def clear_current_players():
         players[player2username].reset_streaks()
     currentPlayers["1"]["username"] = ""
     currentPlayers["2"]["username"] = ""
+    write_player_file('0', 'streak', '1')
+    write_player_file('0', 'streak', '2')
     write_player_file('', 'name', '1')
     write_player_file('', 'name', '2')
     clear_scores()
