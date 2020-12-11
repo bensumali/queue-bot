@@ -132,7 +132,7 @@ def Execute(data):
             elif command == "!p1s":
                 add_set_win_to_current_player(1)
             elif command == "!p2s":
-                add_match_win_to_current_player(2)
+                add_set_win_to_current_player(2)
             elif command == "!cs":
                 clear_scores()
     if command == "!leave":
@@ -227,10 +227,7 @@ def set_current_player(player_side, username, data=""):
         if username:
             # If there was a username passed in, continue with the rest of the checks
             # Check to see if a displayname was passed in
-            if data:
-                display_name = generate_display_name(data)
-            else:
-                display_name = username
+            display_name = username
             # Check to see if we already have the player in our dictionary
             if username not in players:
                 # If we don't have the player in our dictionary, create a new Player instance for them and add to the dictionary
