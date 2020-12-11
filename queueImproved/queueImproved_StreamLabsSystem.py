@@ -120,6 +120,7 @@ def Execute(data):
             elif command == "!removeplayer":
                 remove_from_queue(param1)
             elif command == "!swap":
+            elif command == "!swap":
                 swap_current_players()
             elif command == "!p1":
                 update_current_player_name(generate_display_name(data), 1)
@@ -437,9 +438,9 @@ def increment_score(fileLocation):
     write_to_file(fileLocation, str(currentScore))
 
 
-def clear_scores(): 
-    write_to_file(config('player1ScoreFile'), "0")
-    write_to_file(config('player2ScoreFile'), "0")
+def clear_scores():
+    write_player_file('0', 'score', 1)
+    write_player_file('0', 'score', 2)
 
 
 def display_queue_list_as_chat_message():
