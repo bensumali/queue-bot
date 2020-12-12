@@ -193,7 +193,7 @@ def add_set_win_to_current_player(player_side, get_next_player=False):
 def set_match_wins_of_current_player(player_side, wins):
     player_username = currentPlayers[str(player_side)]["username"]
     player = players[player_username]
-    player.set_wins(wins)
+    player.set_match_wins(wins)
     write_player_file(player.get_current_match_wins(), 'score', player_side)
     send_message("Set @" + player.username + "'s match wins to " + wins)
     return player.set_match_wins(wins)
@@ -457,10 +457,10 @@ def clear_scores():
     player2username = currentPlayers["2"]["username"]
     if player1username:
         player1 = players[player1username]
-        player1.set_wins(0)
+        player1.set_match_wins(0)
     if player2username:
         player2 = players[player2username]
-        player2.set_wins(0)
+        player2.set_match_wins(0)
     write_player_file('0', 'score', 1)
     write_player_file('0', 'score', 2)
 
