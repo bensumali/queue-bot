@@ -431,14 +431,24 @@ def add_player_record(username):
 
 
 def swap_current_players():
-    player_1 = currentPlayers['1']
-    player_2 = currentPlayers['2']
+    player_1_username = currentPlayers['1']['username']
+    player_2_username = currentPlayers['2']['username']
 
-    currentPlayers['1'] = player_2
-    currentPlayers['2'] = player_1
+    player_1 = players[player_1_username]
+    player_2 = players[player_2_username]
 
-    write_to_file(config('player1NameFile'), player_2['username'])
-    write_to_file(config('player2NameFile'), player_1['username'])
+    currentPlayers['1']['username'] = player_2_username
+    currentPlayers['2']['username'] = player_1_username
+
+    if player_1:
+        write_player_file(player_1.match_wins, 'score', 2)
+        write_player_file(player_1.set_wins, 'streak', 2)
+        write_player_file(player_1.display_name, 'name', 2)
+
+    if player_2:
+        write_player_file(player_2.match_wins, 'score', 1)
+        write_player_file(player_2.set_wins, 'streak', 1)
+        write_player_file(player_2.display_name, 'name', 1)
     return True
 
 
