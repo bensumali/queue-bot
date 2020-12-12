@@ -46,14 +46,17 @@
 
                             let name = document.createElement("div");
                             name.classList.add("player-queue-player__name");
-                            name.innerHTML = player;
+                            name.innerHTML = player.name;
 
                             let td2 = document.createElement("td");
                             td2.classList.add("player-queue-player__streak-container");
 
                             let streak = document.createElement("div");
                             streak.classList.add("player-queue-player__streak");
-                            streak.innerHTML = "0";
+                            if(player.streak)
+                                streak.innerHTML = player.streak;
+                            else
+                                streak.innerHTML = "0";
 
                             td1.appendChild(position);
                             td1.appendChild(name);

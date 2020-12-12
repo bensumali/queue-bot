@@ -368,9 +368,8 @@ def write_queue_to_file():
     file = open(queueFile, "w")
     file.write("export default { 'players': [")
     for index, val in enumerate(queue.players):
-        # if val != queueClosedPlayer:
         player = players.get(val)
-        string_to_write = "'" + str(player.display_name) + "', "
+        string_to_write = "{'name': '" + str(player.display_name) + "', 'streak': '" + str(player.highest_set_streak) + "'}, "
         file.write(string_to_write)
     file.write("], 'is_open': " + str(queue.is_queue_open()).lower() + " }")
     file.close()

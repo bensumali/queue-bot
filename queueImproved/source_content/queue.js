@@ -1,1 +1,1 @@
-export default { 'players': [], 'is_open': true }
+export default { 'players': [{'name': 'pac0ncrack', 'streak': '1'}, ], 'is_open': true }
