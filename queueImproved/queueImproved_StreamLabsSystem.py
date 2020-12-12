@@ -112,7 +112,7 @@ def Execute(data):
                     param1 = "2"
                 else:
                     param1 = "1"
-                add_set_win_to_current_player(param1)
+                add_set_win_to_current_player(param1, True)
             elif command == "!currentplayer":
                 send_message(nextUser)
             elif command == "!setplayer":
