@@ -16,6 +16,8 @@ from queue_new import Queue
 queue = Queue()
 queueFile = "Services/Scripts/queueImproved/source_content/queue.js"
 
+bully = False
+
 queueOpen = False
 queueMaxCapacity = 10
 queueClosedPlayer = "QUEUE IS CLOSED"
@@ -189,6 +191,8 @@ def add_set_win_to_current_player(player_side, get_next_player=False):
         send_message("@" + winning_player.username + " won the set!")
     if get_next_player:
         pop_next_player(losing_player_side)
+    find_bully()
+    write_bully_file()
     return True
 
 
@@ -207,6 +211,8 @@ def set_set_wins_of_current_player(player_side, wins):
     player.set_set_wins(wins)
     write_player_file(player.get_current_set_streak(), 'streak', player_side)
     send_message("Set @" + player.username + "'s set wins to " + wins)
+    find_bully()
+    write_bully_file()
     return player.set_set_wins(wins)
 
 
@@ -368,6 +374,13 @@ def write_player_file(value, file_type, side):
     return True
 
 
+def write_bully_file():
+    if bully:
+        file = open(config('bullyFile'), "w")
+        file.write("export default { 'username': '" + str(bully.username) + "', 'wins': '" + str(bully.highest_set_streak) + "'}")
+        file.close()
+    return True
+
 def write_queue_to_file():
     global queue
     file = open(queueFile, "w")
@@ -483,3 +496,16 @@ def display_queue_list_as_chat_message():
     send_message(chatString)
 
 
+def find_bully():
+    """
+    Finds the player with the highest set streak.
+    :return: Player or False if there are no bullies
+    """
+    global bully
+    for index, val in players.items():
+        if not bully or int(bully.highest_set_streak) < int(val.highest_set_streak):
+            bully = val
+            write_bully_file()
+            if val.username != bully.username:
+                send_message("@" + bully.username + " is now the bully!")
+    return bully
