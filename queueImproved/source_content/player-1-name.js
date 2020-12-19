@@ -1,1 +1,1 @@
-export default { 'name': 'kcheezy'}
+export default { 'name': ''}
