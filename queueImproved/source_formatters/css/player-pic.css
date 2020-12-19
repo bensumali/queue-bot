@@ -1,0 +1,15 @@
+#player-pic-container {
+    background: linear-gradient(84.09deg, #0F144E -44.42%, rgba(153, 155, 180, 0.426354) 80.85%, rgba(255, 255, 255, 0) 112.28%), #FC05F4;
+    border-radius: 100%;
+    display: inline-block;
+    height: 138px;
+    padding: 4px;
+    width: 138px;
+}
+#player-pic {
+    background-image: url('../img/transition.gif');
+    background-size: contain;
+    border-radius: 100%;
+    height: 138px;
+    width: 138px;
+}

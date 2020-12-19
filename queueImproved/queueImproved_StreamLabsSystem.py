@@ -39,7 +39,8 @@ currentPlayers = {
         'files': {
             'name': config('player1NameFile'),
             'score': config('player1ScoreFile'),
-            'streak': config('player1StreakFile')
+            'streak': config('player1StreakFile'),
+            'username': config('player1UsernameFile')
         }
     },
     '2': {
@@ -47,7 +48,8 @@ currentPlayers = {
         'files': {
             'name': config('player2NameFile'),
             'score': config('player2ScoreFile'),
-            'streak': config('player2StreakFile')
+            'streak': config('player2StreakFile'),
+            'username': config('player2UsernameFile')
         }
     }
 }
@@ -221,6 +223,8 @@ def clear_current_players():
     write_player_file('0', 'streak', '2')
     write_player_file('', 'name', '1')
     write_player_file('', 'name', '2')
+    write_player_file('', 'username', '1')
+    write_player_file('', 'username', '2')
     clear_scores()
 
 
@@ -256,6 +260,7 @@ def set_current_player(player_side, username, data=""):
             write_player_file(display_name, 'name', player_side)
             write_player_file(player.get_current_match_wins(), 'score', player_side)
             write_player_file(player.get_current_set_streak(), 'streak', player_side)
+            write_player_file(username, 'username', player_side)
             send_message(Message("!setplayer", "success", player_side, username).text())
             return True
         else:
@@ -413,13 +418,11 @@ def is_currently_playing(username):
 def update_current_player_name(username, player_side):
     
     add_player_record(username)
-
-    if player_side == 1:
-        currentPlayers['1']['username'] = username
-        write_player_file(username, 'name', player_side)
-    else:
-        currentPlayers['2']['username'] = username
-        write_player_file(username, 'name', player_side)
+    player = players[username]
+    if player:
+        currentPlayers[str(player_side)]['username'] = username
+        write_player_file(username, 'name', str(player_side))
+        write_player_file(username, 'username', str(player_side))
 
 
 def add_player_record(username): 
@@ -444,21 +447,14 @@ def swap_current_players():
         write_player_file(player_1.match_wins, 'score', 2)
         write_player_file(player_1.set_wins, 'streak', 2)
         write_player_file(player_1.display_name, 'name', 2)
+        write_player_file(player_1_username, 'username', 2)
 
     if player_2:
         write_player_file(player_2.match_wins, 'score', 1)
         write_player_file(player_2.set_wins, 'streak', 1)
         write_player_file(player_2.display_name, 'name', 1)
+        write_player_file(player_2_username, 'username', 1)
     return True
-
-
-def increment_score(fileLocation):
-    fileReader = open(fileLocation, "r")
-    currentScore = int(fileReader.read())
-    currentScore = currentScore + 1
-    fileReader.close
-
-    write_to_file(fileLocation, str(currentScore))
 
 
 def clear_scores():
@@ -477,22 +473,13 @@ def clear_scores():
 def display_queue_list_as_chat_message():
     count = 0
     chatString = "The queue is " + str(len(queue.players)) + " people deep. "
-
     for index, val in enumerate(queue.players):
         player = players.get(val)
         count = count + 1
-        
         if count == len(queue.players):
             chatString = chatString + "#" + str(index + 1) + " - " + str(player.display_name)
         else:
             chatString = chatString + "#" + str(index + 1) + " - " + str(player.display_name) + ', '
-        
-    
     send_message(chatString)
-
-def write_to_file(fileLocation, text):
-    file = open(fileLocation, "w")
-    file.write(text)
-    file.close()
 
 
