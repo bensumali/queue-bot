@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/bully.css" />
+</head>
+<body>
+<div id="bully-container" class="hide">
+    <div id="bully-header">BULLY OF THE STREAM</div>
+    <div id="bully">
+        <div id="player-pic-container">
+            <img id="crown" src="img/crown.gif" />
+            <img id="player-pic" />
+        </div>
+        <div id="player-info">
+            <div id="player-name"></div>
+            <div id="player-wins"></div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="js/twitch-api.js"></script>
+<script>
+    getUserData("../../source_content/bully.js", "profile");
+</script>
+</html>

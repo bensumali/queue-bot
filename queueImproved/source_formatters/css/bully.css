@@ -1,0 +1,70 @@
+@font-face {
+  font-family: 'VCR OSD Mono';
+  src: url(../fonts/VCR_OSD_MONO_1.001.ttf);
+}
+html {
+    overflow: hidden
+}
+body {
+    font-family: 'VCR OSD Mono';
+    margin: 0px; overflow: hidden;
+    padding: 0px;
+}
+#player-pic-container {
+    background: linear-gradient(84.09deg, #0F144E -44.42%, rgba(153, 155, 180, 0.426354) 80.85%, rgba(255, 255, 255, 0) 112.28%), #FC05F4;
+    border-radius: 100%;
+    display: inline-block;
+    height: 100px;
+    padding: 4px;
+    position: relative;
+    width: 100px;
+}
+#player-pic {
+    border-radius: 100%;
+    height: 100px;
+    width: 100px;
+}
+#crown {
+    position: absolute;
+    top: -42px;
+    width: 100px;
+}
+#bully-container {
+    background: rgba(0,0,0,0.75);
+    height: 140px;
+    width: 480px;
+    padding: 10px;
+}
+#bully-container.hide {
+    background-image: url('../img/transition-2.gif');
+    background-size: contain;
+}
+#bully-container.hide div {
+    display: none;
+}
+#bully-header {
+    color: white;
+    font-size: 24px;
+    text-align: center;
+}
+#bully {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    margin: 0px auto;
+    padding-top: 5px;
+}
+#player-info {
+    margin-left: 15px;
+    width: fit-content;
+    display: inline-block;
+}
+#player-name {
+    color: #14FF00;
+    font-size: 24px;
+}
+#player-wins {
+    color: #14FF00;
+    margin-top: 10px;
+    width: fit-content;
+}
