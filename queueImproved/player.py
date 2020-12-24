@@ -37,6 +37,9 @@ class Player:
 
     def remove_match_win(self):
         self.match_wins = int(self.match_wins) - 1
+        if self.match_wins < 0:
+            self.match_wins = 0
+        return True
 
     def clear_set_match_wins(self):
         self.set_wins = 0
