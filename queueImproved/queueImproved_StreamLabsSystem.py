@@ -199,6 +199,7 @@ def add_match_win_to_current_player(player_side):
     send_message("@" + player.username + " won a match! The score is now " + str(player_1_score) + " - " + str(player_2_score) + ".")
     return True
 
+
 def remove_match_win_to_current_player(player_side): 
     player = players[currentPlayers[str(player_side)]["username"]]
     player.remove_match_win()
@@ -213,7 +214,7 @@ def remove_match_win_to_current_player(player_side):
         player_2_score = player2.get_current_match_wins()
     else:
         player_2_score = 0
-    send_message("@" + player.username + " won a match! The score is now " + str(player_1_score) + " - " + str(player_2_score) + ".")
+    send_message("Removed a match win from @" + player.username + ". The score is now " + str(player_1_score) + " - " + str(player_2_score) + ".")
     return True
 
 
