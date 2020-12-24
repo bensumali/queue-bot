@@ -24,7 +24,7 @@ function loop(client_id, client_secret, filepath, type) {
                         const response = JSON.parse(xhr.response);
                         const xhr1 = new XMLHttpRequest();
                         xhr1.open("GET", "https://api.twitch.tv/helix/users?login=" + username, true);
-                        xhr1.setRequestHeader('Client-ID', 'bcnkezzrtah276cw73d86sytx2b064');
+                        xhr1.setRequestHeader('Client-ID', client_id);
                         xhr1.setRequestHeader('Authorization', 'Bearer ' + response.access_token);
                         xhr1.onreadystatechange = function() {
                         if (xhr1.readyState === 4) {
