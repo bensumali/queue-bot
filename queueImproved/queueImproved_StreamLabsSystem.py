@@ -165,6 +165,8 @@ def Execute(data):
                 add_set_win_to_current_player(2)
             elif command == "!cs":
                 clear_scores()
+            elif command == "!clearstreaminfo":
+                clear_stream_info()
     if command == "!leave":
         remove_from_queue(data.User)
     elif command == "!setname":
@@ -324,7 +326,6 @@ def open_queue():
     if not queue.is_queue_open():
         queue.open_queue()
         write_queue_to_file()
-        clear_current_players()
         send_message(messageQueueOpen)
     else:
         send_message(messageQueueAlreadyOpen)
@@ -423,6 +424,13 @@ def write_bully_file():
         file = open(config('bullyFile'), "w")
         file.write("export default { 'username': '" + str(bully.username) + "', 'wins': '" + str(bully.highest_set_streak) + "'}")
         file.close()
+    return True
+
+def clear_bully_Info():
+    file = open(config('bullyFile'), "w")
+    file.write("export default { 'username': '', 'wins': ''}")
+    file.close()
+    bully = False
     return True
 
 def write_queue_to_file():
@@ -553,3 +561,8 @@ def find_bully():
             if val.username != bully.username:
                 send_message("@" + bully.username + " is now the bully!")
     return bully
+
+def clear_stream_info():
+    clear_current_players()
+    clear_queue()
+    clear_bully_Info()
