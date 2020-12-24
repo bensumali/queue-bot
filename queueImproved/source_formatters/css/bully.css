@@ -62,6 +62,9 @@ body {
 #player-name {
     color: #14FF00;
     font-size: 24px;
+    max-width: 357px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 #player-wins {
     color: #14FF00;
