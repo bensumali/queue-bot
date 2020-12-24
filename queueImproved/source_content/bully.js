@@ -1,1 +1,1 @@
-export default { 'username': 'pac0ncrack', 'wins': '3'}
+export default { 'username': 'samtruong200', 'wins': '2'}
