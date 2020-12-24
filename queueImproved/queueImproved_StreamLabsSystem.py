@@ -104,6 +104,28 @@ def Execute(data):
                     set_match_wins_of_current_player(arg0[2], arg2)
                 elif arg1 == "set:set_wins":
                     set_set_wins_of_current_player(arg0[2], arg2)
+            elif command == "!p1w":
+                add_match_win_to_current_player(1)
+            elif command == "!p2w":
+                add_match_win_to_current_player(2)
+            elif command == "!p1l":
+                remove_match_win_to_current_player(1)
+            elif command == "!p2l":
+                remove_match_win_to_current_player(2)
+            elif command == "!p1s":
+                add_set_win_to_current_player(1)
+            elif command == "!p2s":
+                add_set_win_to_current_player(2)
+            elif command == "!cs":
+                clear_scores()
+            elif command == "!swap":
+                swap_current_players()
+            elif command == "!next":
+                if param1 == "1":
+                    param1 = "2"
+                else:
+                    param1 = "1"
+                add_set_win_to_current_player(param1, True)
         else:
             if command == "!openq":
                 open_queue()
@@ -133,6 +155,10 @@ def Execute(data):
                 add_match_win_to_current_player(1)
             elif command == "!p2w":
                 add_match_win_to_current_player(2)
+            elif command == "!p1l":
+                remove_match_win_to_current_player(1)
+            elif command == "!p2l":
+                remove_match_win_to_current_player(2)
             elif command == "!p1s":
                 add_set_win_to_current_player(1)
             elif command == "!p2s":
@@ -159,6 +185,23 @@ def Tick():
 def add_match_win_to_current_player(player_side):
     player = players[currentPlayers[str(player_side)]["username"]]
     player.add_match_win()
+    write_player_file(player.get_current_match_wins(), 'score', player_side)
+    if currentPlayers['1']["username"]:
+        player1 = players[currentPlayers['1']["username"]]
+        player_1_score = player1.get_current_match_wins()
+    else:
+        player_1_score = 0
+    if currentPlayers['2']["username"]:
+        player2 = players[currentPlayers['2']["username"]]
+        player_2_score = player2.get_current_match_wins()
+    else:
+        player_2_score = 0
+    send_message("@" + player.username + " won a match! The score is now " + str(player_1_score) + " - " + str(player_2_score) + ".")
+    return True
+
+def remove_match_win_to_current_player(player_side): 
+    player = players[currentPlayers[str(player_side)]["username"]]
+    player.remove_match_win()
     write_player_file(player.get_current_match_wins(), 'score', player_side)
     if currentPlayers['1']["username"]:
         player1 = players[currentPlayers['1']["username"]]
