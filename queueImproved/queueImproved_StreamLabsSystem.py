@@ -426,10 +426,11 @@ def write_bully_file():
         file.close()
     return True
 
-def clear_bully_file():
+def clear_bully_Info():
     file = open(config('bullyFile'), "w")
     file.write("export default { 'username': '', 'wins': ''}")
     file.close()
+    bully = False
     return True
 
 def write_queue_to_file():
@@ -564,4 +565,4 @@ def find_bully():
 def clear_stream_info():
     clear_current_players()
     clear_queue()
-    clear_bully_file()
+    clear_bully_Info()
