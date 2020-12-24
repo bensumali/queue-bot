@@ -165,7 +165,7 @@ def Execute(data):
                 add_set_win_to_current_player(2)
             elif command == "!cs":
                 clear_scores()
-            elif command == "!clearstreaminfo"
+            elif command == "!clearstreaminfo":
                 clear_stream_info()
     if command == "!leave":
         remove_from_queue(data.User)
