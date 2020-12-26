@@ -60,9 +60,20 @@ currentPlayers = {
     }
 }
 videoLastCalled = 0
+videoString = ""
+videoCommands = []
+
 
 def Init():
-
+    global videoString
+    path = "Services/Scripts/queueImproved/source_formatters/videos"
+    video_files = [f for f in listdir(path) if isfile(join(path, f))]
+    videoString = "["
+    for file in video_files:
+        videoString = videoString + "'" + file + "', "
+        videoCommands.append(file.split('.')[0])
+    videoString = videoString[:-2]
+    videoString = videoString + "]"
     return
 
 
@@ -77,8 +88,6 @@ def Execute(data):
     param1 = data.GetParam(1).lower()
     param2 = data.GetParam(2).lower()
     param3 = data.GetParam(3).lower()
-
-    video_commands = ["!damn", "!wow"]
 
     # Commands that are only for mods.
     if Parent.HasPermission(data.User, "Moderator", ""):
@@ -185,7 +194,7 @@ def Execute(data):
         display_queue_list_as_chat_message()
     elif command == "!join":
         join_queue(data.User)
-    elif command in video_commands:
+    elif command in videoCommands:
         play_video(command)
     return
 
@@ -588,15 +597,9 @@ def play_video(command):
     now = int(time.time())
     if now > (videoLastCalled + 10):
         videoLastCalled = now
-        path = "Services/Scripts/queueImproved/source_formatters/videos"
-        video_files = [f for f in listdir(path) if isfile(join(path, f))]
-        video_string = "["
-        for file in video_files:
-            video_string = video_string + "'" + file + "', "
-        video_string = video_string[:-2]
-        video_string = video_string + "]"
+
         file = open(config('videoFile'), "w")
-        file.write("export default { 'command': '" + command + "', 'timestamp': " + str(now) + ", 'files': " + video_string + "}")
+        file.write("export default { 'command': '" + command + "', 'timestamp': " + str(now) + ", 'files': " + videoString + "}")
         file.close()
         return True
     else:
