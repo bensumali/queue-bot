@@ -7,6 +7,10 @@ Version = "1.0.0"
 import sys
 sys.path.append('.\Services\Scripts\queueImproved')
 
+import time
+from os import listdir
+from os.path import isfile, join
+
 from decouple import config
 from player import Player
 from message import Message
@@ -55,10 +59,12 @@ currentPlayers = {
         }
     }
 }
+videoLastCalled = 0
 
 def Init():
 
     return
+
 
 def Execute(data):
 
@@ -71,6 +77,8 @@ def Execute(data):
     param1 = data.GetParam(1).lower()
     param2 = data.GetParam(2).lower()
     param3 = data.GetParam(3).lower()
+
+    video_commands = ["!damn", "!wow"]
 
     # Commands that are only for mods.
     if Parent.HasPermission(data.User, "Moderator", ""):
@@ -177,6 +185,8 @@ def Execute(data):
         display_queue_list_as_chat_message()
     elif command == "!join":
         join_queue(data.User)
+    elif command in video_commands:
+        play_video(command)
     return
 
 
@@ -426,7 +436,7 @@ def write_bully_file():
         file.close()
     return True
 
-def clear_bully_Info():
+def clear_bully_info():
     file = open(config('bullyFile'), "w")
     file.write("export default { 'username': '', 'wins': ''}")
     file.close()
@@ -562,7 +572,32 @@ def find_bully():
                 send_message("@" + bully.username + " is now the bully!")
     return bully
 
+
 def clear_stream_info():
     clear_current_players()
     clear_queue()
-    clear_bully_Info()
+    clear_bully_info()
+
+
+def play_video(command):
+    """
+    Only writes to file if more than 10 seconds since last call.
+    :return: Player or False if there are no bullies
+    """
+    global videoLastCalled
+    now = int(time.time())
+    if now > (videoLastCalled + 10):
+        videoLastCalled = now
+        path = "Services/Scripts/queueImproved/source_formatters/videos"
+        video_files = [f for f in listdir(path) if isfile(join(path, f))]
+        video_string = "["
+        for file in video_files:
+            video_string = video_string + "'" + file + "', "
+        video_string = video_string[:-2]
+        video_string = video_string + "]"
+        file = open(config('videoFile'), "w")
+        file.write("export default { 'command': '" + command + "', 'timestamp': " + str(now) + ", 'files': " + video_string + "}")
+        file.close()
+        return True
+    else:
+        return False

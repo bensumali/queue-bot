@@ -1,0 +1,1 @@
+export default { 'command': '!damn', 'timestamp': 1608974326, 'files': ['!damn.mp4']}
