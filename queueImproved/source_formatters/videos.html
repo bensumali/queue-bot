@@ -33,8 +33,7 @@
             now = Math.floor(Date.now() / 1000);
             if(resp.default.timestamp) {
                 const command = resp.default.command;
-                const id = command.split("!")[1];
-                const video = document.getElementById(id);
+                const video = document.getElementById(command);
                 if(now <= resp.default.timestamp + 2) {
                     if(!playing) {
                         playing = true;
