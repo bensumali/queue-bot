@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div id="video-list"></div>
+    <link rel="stylesheet" href="css/videos.css" />
+</head>
+<body>
+<script>
+    let now = Math.floor(Date.now() / 1000);
+    let lastTimestamp = now;
+    let playing = false;
+    let gotVideoList = false;
+    let video_duration = 0;
+    const importVideo = () => import('../source_content/video.js?t=' + now);
+    function loop() {
+        importVideo().then(function(resp) {
+            if(!gotVideoList) {
+                if(resp.default.files) {
+                    gotVideoList = true;
+                    for(let k in resp.default.files) {
+                        let video_name = resp.default.files[k];
+                        let video_element = document.createElement('video');
+                        let video_id = video_name.split(".")[0];
+                        video_element.src = "videos/" + video_name;
+                        video_element.id = video_id;
+                        document.getElementById("video-list").appendChild(video_element);
+                    }
+
+                }
+            }
+            now = Math.floor(Date.now() / 1000);
+            if(resp.default.timestamp) {
+                const command = resp.default.command;
+                const id = command.split("!")[1];
+                const video = document.getElementById(id);
+                if(now <= resp.default.timestamp + 2) {
+                    if(!playing) {
+                        playing = true;
+                        video.classList.add('active');
+                        lastTimestamp = video.duration + resp.default.timestamp;
+                        video.play();
+                    }
+                }
+                else if(video_duration + lastTimestamp < now) {
+                    playing = false;
+                    video.classList.remove('active');
+                }
+            }
+            setTimeout(loop, 1000)
+        });
+    }
+    loop();
+</script>
+</body>
+</html>
