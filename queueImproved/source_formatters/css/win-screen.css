@@ -22,6 +22,39 @@
         opacity: 0.2;
     }
 }
+
+@keyframes slide-in-p2 {
+    0% {
+        right: -2400px;
+    }
+    100% {
+        right: 0px;
+    }
+}
+@keyframes slide-out-p2 {
+    0% {
+        right: 0px;
+    }
+    100% {
+        right: -2400px;
+    }
+}
+@keyframes slide-in-p1 {
+    0% {
+        left: -1520px;
+    }
+    100% {
+        left: 0px;
+    }
+}
+@keyframes slide-out-p1 {
+    0% {
+        left: 0px;
+    }
+    100% {
+        left: -1520px;
+    }
+}
 body {
     font-family: 'VCR OSD Mono';
     margin: 0px; overflow: hidden;
@@ -30,18 +63,22 @@ body {
 #win-screen-container {
     height: 100vh;
     width: 100vw;
+    position: relative;
 }
 .side {
     align-items: center;
+    color: white;
     float: left;
     height: 100%;
+    justify-content: flex-end;
     width: calc(50% - 140px);
     display: inline-flex;
     padding: 0px 70px;
-    position: relative;
+    position: absolute;
 }
-.side.winner {
-
+#player-1-side {
+    justify-content: flex-start;
+    right: -1520px;
 }
 .side .background {
     height: 100vh;
@@ -50,26 +87,43 @@ body {
     top: 0;
     right: 0;
     z-index: -1;
-    margin-right: -330px;
-    transform: skew(35deg);
     width: calc(50vw);
+}
+
+#player-2-side .background {
+    margin-right: -330px;
+}
+#player-1-side .background {
+    left: -320px;
+    right: 0;
+}
+#player-1-side .background, #player-2-side.winner .background {
+    transform: skew(-35deg);
+}
+#player-2-side .background, #player-1-side.winner .background {
+    transform: skew(35deg);
 }
 .side.winner .background {
     background: rgba(106, 226, 240, 0.75);
-    left: -320px;
-    right: 0;
     width: calc(50vw + 650px);
 }
-.winner-label {
-    display: none;
+
+.winner .label {
     font-size: 144px;
+}
+.label::before {
+    content: "UP NEXT";
+}
+.winner .label::before {
+    content: "WINNER";
 }
 .label {
     position: absolute;
     top: 50px;
+    font-size: 72px;
 }
 #player-1-side {
-    margin-left: -1520px;
+    /*margin-left: -1520px;*/
 }
 .flash {
     animation: blinker 1s linear forwards;
@@ -83,43 +137,70 @@ body {
 }
 #player-2-side .label {
     right: 70px;
-    font-size: 72px;
     text-align: right;
     float: right;
 }
-#player-2-side {
-    color: white;
+.winner {
+    color: black;
 }
-.side.winner .winner-label {
-    display: block;
+.player {
+    margin-bottom: 300px;
+}
+.winner .player {
+    margin-bottom: 0px;
 }
 
 .player-pic-container {
     background: linear-gradient(84.09deg, #0F144E -44.42%, rgba(153, 155, 180, 0.426354) 80.85%, rgba(255, 255, 255, 0) 112.28%), #FC05F4;
     border-radius: 100%;
     display: inline-block;
-    height: 100px;
-    padding: 4px;
+    width: 50px;
+    padding: 2px;
     position: relative;
+    width: 50px;
+}
+.winner .player-pic-container {
+    padding: 4px;
+}
+.winner .player-pic-container, .winner .player-pic {
+    height: 100px;
     width: 100px;
 }
 .player-pic {
     border-radius: 100%;
-    height: 100px;
-    width: 100px;
+    height: 50px;
+    width: 50px;
 }
 .player-name {
+    font-size: 26px;
+}
+.winner .player-name {
     font-size: 50px;
 }
-.player-info {
+#player-1-side .player-info, #player-2-side .player-pic-container {
+    order: 2
+}
+#player-1-side .player-pic-container, #player-2-side .player-info {
+    order: 1
+}
+#player-1-side .player-info {
     margin-left: 15px;
+}
+#player-2-side .player-info {
+    margin-right: 15px;
+}
+.player-info {
     width: fit-content;
     display: inline-block;
 }
 .player-wins {
+    display: none;
     font-size: 30px;
     overflow: hidden;
     position: relative;
+}
+.winner .player-wins {
+    display: block;
 }
 .player-wins .text {
     margin-left: 40px;
@@ -141,7 +222,18 @@ body {
     display: flex;
     align-items: center;
 }
-
+#player-2-side.slide-in {
+    animation: slide-in-p2 750ms ease-out forwards;
+}
+#player-1-side.slide-in {
+    animation: slide-in-p1 750ms ease-out forwards;
+}
+#player-2-side.slide-out {
+    animation: slide-out-p2 750ms ease-in forwards;
+}
+#player-1-side.slide-out {
+    animation: slide-out-p1 750ms ease-in forwards;
+}
 .wins {
     position: absolute;
 }

@@ -9,9 +9,9 @@
 </head>
 <body>
     <div id="win-screen-container">
-        <div id="player-1-side" class="side winner">
+        <div id="player-1-side" class="side">
             <div class="background"></div>
-            <div class="winner-label label">WINNER</div>
+            <div class="label"></div>
             <div class="player">
                 <div class="player-pic-container">
                     <img class="player-pic" src="https://static-cdn.jtvnw.net/jtv_user_pictures/9f6d092e-f367-4762-bac7-de475ce6bc5c-profile_image-70x70.png" />
@@ -22,16 +22,24 @@
                 </div>
             </div>
         </div>
-        <div id="player-2-side" class="side">
+        <div id="player-2-side" class="side winner">
             <div class="background"></div>
-<!--            <div class="winner-label label">WINNER</div>-->
-            <div class="next-label label">UP NEXT</div>
+            <div class="label"></div>
+            <div class="player">
+                <div class="player-pic-container">
+                    <img class="player-pic" src="https://static-cdn.jtvnw.net/jtv_user_pictures/9f6d092e-f367-4762-bac7-de475ce6bc5c-profile_image-70x70.png" />
+                </div>
+                <div class="player-info">
+                    <div class="player-name">1234567anthony1234567</div>
+                    <div class="player-wins"><i class="fas-1 fas fa-caret-up"></i><i class="fas-2 fas fa-caret-up"></i> <div class="text"><div class="old-wins wins">5</div><div class="new-wins wins">6</div><div class="label-text">SET WIN STREAK</div></div></div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
 <script>
-    $("#player-1-side").animate({'margin-left': "0px"}, 750);
-    $("#player-2-side").animate({'right': "0px"}, 1000);
+    // $(".winner").animate({'margin-left': "0px"}, 750);
+    $(".winner").addClass('slide-in');
     setTimeout(function() {
         $(".winner .fas-1").animate({"top": "-21px", "opacity": "0.2"}, 500)
         $(".winner .fas-2").animate({"top": "0px", "opacity": "1"}, 700)
@@ -42,11 +50,18 @@
     }, 1200)
     setTimeout(function() {
          $(".side.winner .player-info").addClass('flash');
-    }, 250);
+    }, 2000);
     setTimeout(function() {
-        $("#player-1-side").animate({'margin-left': "-1520px"}, 750);
-        $("#player-2-side").animate({'right': "-2400px"}, 1000);
+        $(".side:not(.winner)").addClass('slide-in');
+    }, 2500);
+    setTimeout(function() {
+        $(".side").removeClass('slide-in');
+        $(".side").addClass('slide-out');
     }, 5000)
+    setTimeout(function() {
+        $(".winner .old-wins").css({"top": "0px", "opacity": "1"})
+        $(".winner .new-wins").css({"top": "-30px", "opacity": "0.2"})
+    }, 6000)
 
 </script>
 </html>
