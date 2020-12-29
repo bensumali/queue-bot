@@ -60,9 +60,20 @@ currentPlayers = {
     }
 }
 videoLastCalled = 0
+videoString = ""
+videoCommands = []
+
 
 def Init():
-
+    global videoString
+    path = "Services/Scripts/queueImproved/source_formatters/videos"
+    video_files = [f for f in listdir(path) if isfile(join(path, f))]
+    videoString = "["
+    for file in video_files:
+        videoString = videoString + "'" + file + "', "
+        videoCommands.append(file.split('.')[0])
+    videoString = videoString[:-2]
+    videoString = videoString + "]"
     return
 
 
@@ -77,8 +88,6 @@ def Execute(data):
     param1 = data.GetParam(1).lower()
     param2 = data.GetParam(2).lower()
     param3 = data.GetParam(3).lower()
-
-    video_commands = ["!damn", "!wow"]
 
     # Commands that are only for mods.
     if Parent.HasPermission(data.User, "Moderator", ""):
@@ -185,7 +194,7 @@ def Execute(data):
         display_queue_list_as_chat_message()
     elif command == "!join":
         join_queue(data.User)
-    elif command in video_commands:
+    elif command in videoCommands:
         play_video(command)
     return
 
@@ -245,10 +254,15 @@ def add_set_win_to_current_player(player_side, get_next_player=False):
         winning_player.add_set_win()
         write_player_file(winning_player.get_current_set_streak(), 'streak', player_side)
         send_message("@" + winning_player.username + " won the set!")
+    else:
+        winning_player = False
     if get_next_player:
-        pop_next_player(losing_player_side)
+        next_player_name = pop_next_player(losing_player_side)
+    else:
+        next_player_name = False
     find_bully()
     write_bully_file()
+    write_win_screen_file(winning_player, player_side, next_player_name)
     return True
 
 
@@ -480,7 +494,8 @@ def pop_next_player(player_side):
         write_queue_to_file()
     else:
         send_message("No one's got next. Sure is lonely in here...")
-    return True
+        next_player = False
+    return next_player
 
 
 def is_currently_playing(username):
@@ -588,16 +603,29 @@ def play_video(command):
     now = int(time.time())
     if now > (videoLastCalled + 10):
         videoLastCalled = now
-        path = "Services/Scripts/queueImproved/source_formatters/videos"
-        video_files = [f for f in listdir(path) if isfile(join(path, f))]
-        video_string = "["
-        for file in video_files:
-            video_string = video_string + "'" + file + "', "
-        video_string = video_string[:-2]
-        video_string = video_string + "]"
+
         file = open(config('videoFile'), "w")
-        file.write("export default { 'command': '" + command + "', 'timestamp': " + str(now) + ", 'files': " + video_string + "}")
+        file.write("export default { 'command': '" + command + "', 'timestamp': " + str(now) + ", 'files': " + videoString + "}")
         file.close()
         return True
     else:
         return False
+
+
+def write_win_screen_file(winning_player, winning_side, next_player):
+    """
+    Writes file to display the winner and next player.
+    :return: Bool
+    """
+    if winning_player:
+        now = int(time.time())
+        if not next_player:
+            next_player_name = ''
+        else:
+            next_player_name = next_player
+        file = open(config('winScreenFile'), "w")
+        file.write("export default { 'winning_side': " + str(winning_side) + ", 'next_player': {'username': '" + next_player_name + "'},'winning_player': {'username': '" + winning_player.username + "', 'set_streak': '" + str(winning_player.set_streak) + "'}, 'timestamp': " + str(now) + "}")
+        file.close()
+    return True
+
+

@@ -1,1 +1,1 @@
-export default { 'command': '!damn', 'timestamp': 1608974326, 'files': ['!damn.mp4']}
+export default { 'command': '!damn', 'timestamp': 1609005986, 'files': ['!damn.mp4']}

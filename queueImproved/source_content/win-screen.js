@@ -1,0 +1,1 @@
+export default { 'winning_side': 1, 'next_player': {'username': 'pac0ncrack'},'winning_player': {'username': 'samtruong200', 'set_streak': '3'}, 'timestamp': 1609267949}

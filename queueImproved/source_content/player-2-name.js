@@ -1,1 +1,1 @@
-export default { 'name': ''}
+export default { 'name': 'pac0ncrack'}
