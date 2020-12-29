@@ -2,6 +2,26 @@
   font-family: 'VCR OSD Mono';
   src: url(../fonts/VCR_OSD_MONO_1.001.ttf);
 }
+@keyframes scroll-up-old {
+    0% {
+        top: 0px;
+        opacity: 1;
+    }
+    100% {
+        top: -30px;
+        opacity: 0.2;
+    }
+}
+@keyframes scroll-up-new {
+    0% {
+        top: 30px;
+        opacity: 0.2;
+    }
+    100% {
+        top: 0px;
+        opacity: 1;
+    }
+}
 @keyframes blinker {
     0% {
         opacity: 1;
@@ -239,4 +259,10 @@ body {
 }
 .player-wins .label-text {
     margin-left: 36px;
+}
+.old-wins.scroll-up {
+    animation: scroll-up-old 500ms ease-in forwards;
+}
+.new-wins.scroll-up {
+    animation: scroll-up-new 700ms ease-in forwards;
 }
