@@ -27,7 +27,7 @@
         const importQueue = () => import('../source_content/queue.js?t=' + time);
         let queue = {}
         function loop() {
-
+            importQueue().then(function(resp) {
                 const newQueue = resp.default;
                 const elementId = "player-queue-container__body";
                 if(newQueue !== queue) {
