@@ -143,6 +143,12 @@ def Execute(data):
                 else:
                     param1 = "1"
                 add_set_win_to_current_player(param1, True)
+            elif command == "!skip":
+                if param1 == "1":
+                    param1 = "2"
+                else:
+                    param1 = "1"
+                pop_next_player(param1)
         else:
             if command == "!openq":
                 open_queue()
