@@ -37,7 +37,7 @@ body {
 }
 #bully-container.hide {
     background-image: url('../img/transition-2.gif');
-    background-size: contain;
+    background-size: cover;
 }
 #bully-container.hide div {
     display: none;

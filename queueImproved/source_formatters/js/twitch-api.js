@@ -41,7 +41,7 @@ function loop(client_id, client_secret, filepath, type) {
                                   setTimeout(function() {
                                       document.getElementById("player-pic").src = response1.data[0].profile_image_url;
                                       document.getElementById("player-name").innerHTML = username;
-                                      document.getElementById("player-wins").innerHTML = wins + ' set win streak';
+                                      document.getElementById("player-wins").innerHTML = wins + ' SET WIN STREAK';
                                       document.getElementById("bully-container").classList.remove('hide');
                                   }, 1000);
                               }

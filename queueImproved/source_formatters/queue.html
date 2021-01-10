@@ -8,13 +8,12 @@
     <body>
         <div id='player-queue-container'>
             <div id='player-queue-container__header'>
-                <h1>Player Queue</h1>
+                <h1>Queue</h1>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th style='text-align: left;'>Name</th>
-                        <th style='text-align: right;'>Highest Streak</th>
+                        <th style='text-align: left;'></th>
                     </tr>
                 </thead>
                 <tbody id="player-queue-container__body">
@@ -48,21 +47,11 @@
                             name.classList.add("player-queue-player__name");
                             name.innerHTML = player.name;
 
-                            let td2 = document.createElement("td");
-                            td2.classList.add("player-queue-player__streak-container");
-
-                            let streak = document.createElement("div");
-                            streak.classList.add("player-queue-player__streak");
-                            if(player.streak)
-                                streak.innerHTML = player.streak;
-                            else
-                                streak.innerHTML = "0";
 
                             td1.appendChild(position);
                             td1.appendChild(name);
                             tr.appendChild(td1);
-                            td2.appendChild(streak);
-                            tr.appendChild(td2);
+
 
                             document.getElementById("player-queue-container__body").appendChild(tr);
 
@@ -71,7 +60,7 @@
                             const closeTr = document.createElement("tr");
                             const closeTd = document.createElement("td");
                             closeTd.classList.add("player-queue-player__closed");
-                            closeTd.setAttribute("colspan", "2");
+
                             closeTd.innerHTML = "QUEUE IS CLOSED";
                             closeTr.appendChild(closeTd);
                             document.getElementById(elementId).appendChild(closeTr);
@@ -79,7 +68,7 @@
                             const noPlayersTr = document.createElement("tr");
                             const noPlayersTd = document.createElement("td");
                             noPlayersTd.classList.add("player-queue-player__no-players");
-                            noPlayersTd.setAttribute("colspan", "2");
+
                             noPlayersTd.innerHTML = "NO PLAYERS IN QUEUE";
                             noPlayersTr.appendChild(noPlayersTd);
                             document.getElementById(elementId).appendChild(noPlayersTr);
