@@ -18,12 +18,13 @@ body {
     width: 43px;
 }
 #player-streak {
-    color: #FF3D00;
-    font-size: 20px;
+    color: #ffffff;
+    font-size: 24px;
     position: absolute;
     width: 43px;
     text-align: center;
-    top: 20px;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    top: 16px;
     left: 0;
 }
 .hide {

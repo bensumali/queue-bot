@@ -1,1 +1,1 @@
-export default { 'players': [{'name': 'pac0ncrack', 'streak': '0'}, {'name': 'goukenrespect', 'streak': '0'}], 'is_open': true }
+export default { 'players': [{'name': 'pac0ncrack', 'streak': '0'}, ], 'is_open': false }
