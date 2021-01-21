@@ -2,9 +2,9 @@ body {
     margin: 0px;
 }
 video {
-    visibility: hidden;
+    display: none;
     width: 100vw;
 }
 video.active {
-    visibility: visible
+    display: block;
 }
