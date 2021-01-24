@@ -2,4 +2,4 @@
 .env
 config.js
 venv
-source_formatters/videos/!exodia.mp4
+./source_formatters/videos/!exodia.mp4

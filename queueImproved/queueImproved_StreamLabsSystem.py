@@ -190,6 +190,12 @@ def Execute(data):
                 clear_scores()
             elif command == "!clearstreaminfo":
                 clear_stream_info()
+            elif command == "!skip":
+                if param1 == "1":
+                    param1 = "2"
+                else:
+                    param1 = "1"
+                pop_next_player(param1)
     if command == "!leave":
         remove_from_queue(data.User)
     elif command == "!setname":
