@@ -2,6 +2,11 @@
   font-family: 'VCR OSD Mono';
   src: url(../fonts/VCR_OSD_MONO_1.001.ttf);
 }
+@keyframes bully-flash {
+    50% {
+        opacity: 0;
+    }
+}
 @keyframes scroll-up-old {
     0% {
         top: 0px;
@@ -265,4 +270,77 @@ body {
 }
 .new-wins.scroll-up {
     animation: scroll-up-new 700ms ease-in forwards;
+}
+#static {
+    background-image: url('../img/transition-3.gif');
+    background-position: center;
+    background-size: cover;
+    display: none;
+    height: 100vh;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100vw;
+}
+#static.active {
+    display: block;
+}
+#new-bully {
+    align-items: center;
+    background-color: black;
+    display: none;
+    height: 100vh;
+    justify-content: center;
+    position: relative;
+    width: 100vw;
+}
+#new-bully.active {
+    display: flex;
+}
+#new-bully__text {
+    align-items: center;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    height: 100vh;
+    position: relative;
+    justify-content: center;
+    width: 100vw;
+    z-index: 2;
+    flex-direction: column;
+}
+#new-bully__text .player {
+    color: white;
+    flex-direction: column;
+    margin-top: 55px;
+    margin-bottom: 0px;
+}
+#new-bully__text .player-pic-container {
+    margin-bottom: 20px;
+    width: 120px;
+}
+#new-bully__text .player-pic {
+    height: 120px;
+    width: 120px;
+}
+#new-bully__text .player-name {
+    font-size: 36px;
+}
+#new-bully__header {
+    animation: bully-flash 1.2s step-start infinite;
+    background: rgba(106, 226, 240, 1);
+    color: black;
+    font-size: 72px;
+    padding: 15px;
+}
+#video-background {
+    left: 0;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    z-index: 1;
+}
+#video-background video {
+    height: 100%;
+    width: 100%;
 }

@@ -1,1 +1,1 @@
-export default { 'streak': '3'}
+export default { 'streak': '1'}
