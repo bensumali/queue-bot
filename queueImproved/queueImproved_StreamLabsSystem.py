@@ -604,7 +604,7 @@ def clear_stream_info():
     clear_current_players()
     clear_queue()
     clear_bully_info()
-
+    clear_win_info()
 
 def play_video(command):
     """
@@ -640,4 +640,10 @@ def write_win_screen_file(winning_player, winning_side, next_player):
         file.close()
     return True
 
+
+def clear_win_info():
+    now = int(time.time())
+    file = open(config('winScreenFile'), "w")
+    file.write("export default { 'timestamp': " + str(now) + "}")
+    file.close()
 

@@ -1,1 +1,1 @@
-export default { 'name': 'dosandahalf5incos'}
+export default { 'name': 'wentinel'}

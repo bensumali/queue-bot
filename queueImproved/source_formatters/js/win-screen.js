@@ -8,23 +8,27 @@ function loop(client_id, client_secret, filepath) {
         const winning_player = resp.default.winning_player;
         const next_player = resp.default.next_player;
         const winning_side = resp.default.winning_side;
-        let animateBully = false;
-        if (resp.default.bully) {
-            if (bully.username) {
-                if (bully.username !== resp.default.bully) {
-                    animateBully = true;
-                    bully = resp.default.bully;
-                }
-            }
-            else {
-                animateBully = true;
-                bully = resp.default.bully;
-            }
-        }
-
         let now = Math.floor(Date.now() / 1000);
         if(now <= resp.default.timestamp + 2) {
-            if(winning_player.username !== " ") {
+            if(winning_player) {
+                if(winning_player.username !== " ") {
+                    $(".side").removeClass('winner');
+                    $(".side:nth-child(" + winning_side + ")").addClass('winner');
+                let animateBully = false;
+                if (resp.default.bully) {
+                    if (bully.username) {
+                        console.log(resp.default.bully.username);
+                        if (bully.username !== resp.default.bully.username) {
+                            animateBully = true;
+                            bully = resp.default.bully;
+                        }
+                    }
+                    else {
+                        console.log("here");
+                        animateBully = true;
+                        bully = resp.default.bully;
+                    }
+                }
                 let xhr = new XMLHttpRequest();
                 xhr.open("POST", "https://id.twitch.tv/oauth2/token", true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
@@ -61,21 +65,17 @@ function loop(client_id, client_secret, filepath) {
                                             xhr2.onreadystatechange = function() {
                                                 if (xhr2.readyState === 4) {
                                                     const response2 = JSON.parse(xhr2.response);
-                                                    // console.log(response2);
+                                                    console.log(response2);
                                                     $('.side:not(.winner) .player-pic').attr("src", response2.data[0].profile_image_url);
                                                     $('.side:not(.winner)  .player-name').html(next_player.username);
                                                     if(animateBully) {
-                                                        const xhr3 = new XMLHttpRequest();
-                                                        xhr3.open("GET", "https://api.twitch.tv/helix/users?login=" + bully.username, true);
-                                                        xhr3.setRequestHeader('Client-ID', client_id);
-                                                        xhr3.setRequestHeader('Authorization', 'Bearer ' + response1.access_token);
-                                                        xhr3.onreadystatechange = function() {
-                                                            if (xhr3.readyState === 4) {
-                                                                const response3 = JSON.parse(xhr3.response);
-                                                                $('#bully .player-pic').attr("src", response3.data[0].profile_image_url);
-                                                                $('#bully  .player-name').html(bully.username);
-                                                                animateWinScreen(winning_side,true, animateBully);
-                                                            }
+                                                        console.log(winning_player);
+                                                        console.log(bully);
+                                                        if(winning_player.username === bully.username) {
+
+                                                            $('#new-bully .player-pic')[0].attr("src", response1.data[0].profile_image_url);
+                                                            $('#new-bully .player-name')[0].html(bully.username);
+                                                            animateWinScreen(winning_side,true, animateBully);
                                                         }
                                                     } else {
                                                         animateWinScreen(winning_side,true, animateBully);
@@ -90,7 +90,12 @@ function loop(client_id, client_secret, filepath) {
                                     };
                                 }
                                 else {
-                                    animateWinScreen(winning_side,false, animateBully)
+                                    if(winning_player.username === bully.username) {
+                                        $('#new-bully .player-pic').get(0).setAttribute("src", response1.data[0].profile_image_url);
+                                        $('#new-bully .player-name').get(0).innerHTML = bully.username;
+                                        animateWinScreen(winning_side,false, animateBully);
+                                    } else
+                                        animateWinScreen(winning_side,false, animateBully)
                                 }
                             }
                         }
@@ -100,6 +105,7 @@ function loop(client_id, client_secret, filepath) {
                         xhr1.send();
                     }
                 };
+            }
             }
         }
         time = Math.floor(Date.now() / 1000);
@@ -115,10 +121,9 @@ function animateWinScreen(winningSide, isNextPlayer, animateBully) {
     if(!playing) {
         playing = true;
         $(".side").removeClass('slide-out');
-        $(".side").removeClass('winner');
         $(".player-info").removeClass('flash');
         $(".wins").removeClass('scroll-up');
-        $(".side:nth-child(" + winningSide + ")").addClass('winner');
+
         $(".winner").addClass('slide-in');
         setTimeout(function() {
             $(".winner .fas-1").animate({"top": "-21px", "opacity": "0.2"}, 500)
@@ -156,8 +161,13 @@ function animateWinScreen(winningSide, isNextPlayer, animateBully) {
                 $('#new-bully video')[0].play();
             }, 7000)
             setTimeout(function () {
-
-            }, 7000)
+                $('#new-bully').removeClass('active');
+                $('#static').addClass('active');
+            }, 9700)
+            setTimeout(function () {
+                $('#static').removeClass('active');
+                playing = false;
+            }, 10700)
         }
         // setTimeout(function() {
         //     $(".winner .old-wins").css({"top": "0px", "opacity": "1"})
