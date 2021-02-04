@@ -50,44 +50,34 @@ function loop(client_id, client_secret, filepath) {
                                 $('.winner .old-wins').html(parseInt(winning_player.set_streak) - 1);
                                 $('.winner .new-wins').html(parseInt(winning_player.set_streak));
                                 if(next_player.username) {
-                                    xhr = new XMLHttpRequest();
-                                    xhr.open("POST", "https://id.twitch.tv/oauth2/token", true);
-                                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-                                    xhr.setRequestHeader('Accept', 'application/json');
-                                    xhr.send('client_id='+ client_id +'&client_secret='+ client_secret +'&grant_type=client_credentials');
-                                    xhr.onreadystatechange = function () {
-                                        if (xhr.readyState === 4) {
-                                            const response1 = JSON.parse(xhr.response);
-                                            const xhr2 = new XMLHttpRequest();
-                                            xhr2.open("GET", "https://api.twitch.tv/helix/users?login=" + next_player.username, true);
-                                            xhr2.setRequestHeader('Client-ID', client_id);
-                                            xhr2.setRequestHeader('Authorization', 'Bearer ' + response1.access_token);
-                                            xhr2.onreadystatechange = function() {
-                                                if (xhr2.readyState === 4) {
-                                                    const response2 = JSON.parse(xhr2.response);
-                                                    console.log(response2);
-                                                    $('.side:not(.winner) .player-pic').attr("src", response2.data[0].profile_image_url);
-                                                    $('.side:not(.winner)  .player-name').html(next_player.username);
-                                                    if(animateBully) {
-                                                        console.log(winning_player);
-                                                        console.log(bully);
-                                                        if(winning_player.username === bully.username) {
+                                    const xhr2 = new XMLHttpRequest();
+                                    xhr2.open("GET", "https://api.twitch.tv/helix/users?login=" + next_player.username, true);
+                                    xhr2.setRequestHeader('Client-ID', client_id);
+                                    xhr2.setRequestHeader('Authorization', 'Bearer ' + response.access_token);
+                                    xhr2.onreadystatechange = function() {
+                                        if (xhr2.readyState === 4) {
+                                            const response2 = JSON.parse(xhr2.response);
+                                            console.log(response2);
+                                            $('.side:not(.winner) .player-pic').attr("src", response2.data[0].profile_image_url);
+                                            $('.side:not(.winner)  .player-name').html(next_player.username);
+                                            if(animateBully) {
+                                                console.log(winning_player);
+                                                console.log(bully);
+                                                if(winning_player.username === bully.username) {
 
-                                                            $('#new-bully .player-pic')[0].attr("src", response1.data[0].profile_image_url);
-                                                            $('#new-bully .player-name')[0].html(bully.username);
-                                                            animateWinScreen(winning_side,true, animateBully);
-                                                        }
-                                                    } else {
-                                                        animateWinScreen(winning_side,true, animateBully);
-                                                    }
+                                                    $('#new-bully .player-pic').attr("src", response1.data[0].profile_image_url);
+                                                    $('#new-bully .player-name').html(bully.username);
+                                                    animateWinScreen(winning_side,true, animateBully);
                                                 }
+                                            } else {
+                                                animateWinScreen(winning_side,true, animateBully);
                                             }
-                                            xhr2.onerror = function(error){
-                                              // console.log(error.target.status);
-                                            };
-                                            xhr2.send();
                                         }
+                                    }
+                                    xhr2.onerror = function(error){
+                                        // console.log(error.target.status);
                                     };
+                                    xhr2.send();
                                 }
                                 else {
                                     if(winning_player.username === bully.username) {
