@@ -1,1 +1,1 @@
-export default { 'winning_side': 1, 'next_player': {'username': 'pac0ncrack'},'winning_player': {'username': 'samtruong200', 'set_streak': '3'}, 'timestamp': 1609267949}
+export default { 'winning_side': 1, 'next_player': {'username': 'dosandahalf5incos'},'winning_player': {'username': 'wentinel', 'set_streak': '19'}, 'bully': {'username': 'wentinel', 'set_streak': '19'}, 'timestamp': 1611548210}
